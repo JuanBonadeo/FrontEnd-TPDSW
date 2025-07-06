@@ -1,103 +1,132 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState } from "react"
+import { ChevronLeft, ChevronRight, Star } from "lucide-react"
+
+export default function Page() {
+  const [currentSlide, setCurrentSlide] = useState(0)
+
+  const movies = [
+    {
+      id: 1,
+      title: "Frozen",
+      rating: 4.8,
+      image: "/images/frozen.jpg",
+      year: 2024,
+      genre: "Sci-Fi",
+    },
+    {
+      id: 2,
+      title: "Ralph el Demoledor",
+      rating: 4.7,
+      image: "/images/ralph.jpg",
+      year: 2023,
+      genre: "Drama",
+    },
+    {
+      id: 3,
+      title: "Sonic",
+      rating: 4.5,
+      image: "/images/sonic.jpg",
+      year: 2023,
+      genre: "Comedy",
+    },
+  ]
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % movies.length)
+  }
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + movies.length) % movies.length)
+  }
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index)
+  }
+
+  const currentMovie = movies[currentSlide]
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    <div className="min-h-screen bg-gray-900 text-white p-4">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8 text-center">
+          <span className="text-red-500">Cine</span>PelisDeJuan
+        </h1>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-300">Películas en Tendencia</h2>
+          <div className="relative w-full">
+            <div className="relative overflow-hidden bg-gray-800 border-red-500 border-2 rounded-lg">
+              <div className="relative h-96 bg-gradient-to-t from-gray-900 to-transparent">
+                <img
+                  src={currentMovie.image || "/placeholder.svg"}
+                  alt={currentMovie.title}
+                  className="w-full h-full object-cover transition-opacity duration-500"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = "/placeholder.svg?height=400&width=600"
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
+                <button
+                  type="button"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-black/30 rounded-full p-2 hover:bg-black/50 transition-all duration-200 backdrop-blur-sm"
+                  onClick={prevSlide}
+                  aria-label="Película anterior"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </button>
+                <button
+                  type="button"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-black/30 rounded-full p-2 hover:bg-black/50 transition-all duration-200 backdrop-blur-sm"
+                  onClick={nextSlide}
+                  aria-label="Siguiente película"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </button>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <h4 className="text-xl font-bold mb-2 text-white drop-shadow-lg">{currentMovie.title}</h4>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-red-500 text-red-500" />
+                          <span className="text-sm font-medium text-white">{currentMovie.rating}</span>
+                        </div>
+                        <span className="text-sm text-gray-300">{currentMovie.year}</span>
+                        <span className="text-sm text-gray-300 bg-black/30 px-2 py-1 rounded">
+                          {currentMovie.genre}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-xs text-gray-300 bg-black/30 px-2 py-1 rounded backdrop-blur-sm">
+                      {currentSlide + 1} / {movies.length}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-center gap-2 mt-4">
+              {movies.map((_, index) => (
+                <button
+                  key={index}
+                  className={`w-2 h-2 rounded-full transition-all duration-200 hover:scale-125 ${
+                    index === currentSlide ? "bg-red-500 w-6" : "bg-gray-600 hover:bg-gray-500"
+                  }`}
+                  onClick={() => goToSlide(index)}
+                  aria-label={`Ir a película ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+        <section className="text-center text-gray-400">
+          <p>Usa las flechas o los puntos para navegar entre películas</p>
+          <p className="mt-2">
+            Película actual: <span className="text-white font-semibold">{currentMovie.title}</span>
+          </p>
+        </section>
+      </div>
     </div>
-  );
+  )
 }
