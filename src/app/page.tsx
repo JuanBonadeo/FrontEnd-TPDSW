@@ -1,6 +1,8 @@
 "use client"
 
 import Carrusel from "@/components/Carrusel";
+import Navbar from "@/components/Navbar";
+import { ChevronLeft, ChevronRight } from "lucide-react";   
 import React from "react";
 export default function Page() {
   const movies = [
@@ -30,9 +32,11 @@ export default function Page() {
     },
   ];
 
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
       <div className="max-w-4xl mx-auto">
+        <Navbar />
         <h1 className="text-3xl font-bold mb-8 text-center">
           <span className="text-red-500">Cine</span>PelisDeJuan
         </h1>
@@ -43,6 +47,7 @@ export default function Page() {
             Película actual: <span className="text-white font-semibold">{movies[0].title}</span>
           </p>
         </section>
+        
       </div>
     </div>
   );
