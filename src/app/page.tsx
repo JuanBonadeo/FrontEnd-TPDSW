@@ -1,6 +1,7 @@
 "use client"
 
 import Carrusel from "@/components/Carrusel";
+import Cartelera from "@/components/Cartelera";
 import Navbar from "@/components/Navbar";
 import { ChevronLeft, ChevronRight } from "lucide-react";   
 import React from "react";
@@ -47,7 +48,7 @@ export default function Page() {
             Película actual: <span className="text-white font-semibold">{movies[0].title}</span>
           </p>
         </section>
-        
+        <Cartelera movies={movies} />
       </div>
     </div>
   );
