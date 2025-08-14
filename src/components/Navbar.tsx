@@ -10,7 +10,7 @@ export default function Navbar() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around h-16 bg-card border-t">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around h-16 bg-gray-900 border-t">
       <Link
         href="/"
         className={`flex flex-col items-center justify-center w-full h-full btn-press ${pathname === "/" ? "text-primary" : "text-muted-foreground"}`}
@@ -39,6 +39,7 @@ export default function Navbar() {
         <User className="w-5 h-5" />
         <span className="text-xs mt-1">Perfil</span>
       </Link>
+
     </nav>
   )
 }
