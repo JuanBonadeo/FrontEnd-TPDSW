@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Home, Search, Heart, User } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { useState } from "react";
+import React from "react";
 
 
 export default function Navbar() {

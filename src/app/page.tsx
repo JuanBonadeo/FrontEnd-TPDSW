@@ -1,11 +1,40 @@
 "use client"
 
-import Carrusel from "@/components/Carrusel";
-import Cartelera from "@/components/Cartelera";
-import Navbar from "@/components/Navbar";
-import { ChevronLeft, ChevronRight } from "lucide-react";   
-import React from "react";
+import { useState } from "react"
+import Carrusel from "@/components/Carrusel"
+import Cartelera from "@/components/Cartelera"
+import Navbar from "@/components/Navbar"
+
+import LoginPage from "./login/page"
+import SignupPage from "./signup/page"
+
 export default function Page() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [hasAccount, setHasAccount] = useState(true)
+  const [registeredUser, setRegisteredUser] = useState<{ email: string, password: string } | null>(null)
+
+  if (!isAuthenticated) {
+    if (hasAccount) {
+      return (
+        <LoginPage
+          onLoginSuccess={() => setIsAuthenticated(true)}
+          onSignup={() => setHasAccount(false)}
+          registeredUser={registeredUser}
+        />
+      )
+    } else {
+      return (
+        <SignupPage
+          onSignupSuccess={(email, password) => {
+            setRegisteredUser({ email, password })
+            setHasAccount(true)
+          }}
+          onLogin={() => setHasAccount(true)}
+        />
+      )
+    }
+  }
+
   const movies = [
     {
       id: 1,
@@ -37,10 +66,9 @@ export default function Page() {
       rating: 4.5,
       image: "/images/dragons.jpeg",
       year: 2023,
-      genre: "Animation",
+      genre: "Adventure",
     },
-  ];
-
+  ]
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
@@ -59,5 +87,5 @@ export default function Page() {
         <Cartelera movies={movies} />
       </div>
     </div>
-  );
+  )
 }
