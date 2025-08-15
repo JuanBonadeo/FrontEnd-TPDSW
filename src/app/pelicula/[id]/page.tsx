@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 
-// Tipado de película
+
 interface Movie {
   id: number;
   title: string;
@@ -13,7 +13,6 @@ interface Movie {
   reviews: string[];
 }
 
-// Array de películas con duración y reseñas
 const movies: Movie[] = [
   {
     id: 1,
@@ -54,7 +53,19 @@ const movies: Movie[] = [
       "Sonic es genial.",
     ],
   },
-  // ...agrega más películas aquí...
+  {
+    id: 4,
+    title: "Como entrenar a tu dragón",
+    rating: 4.5,
+    image: "/images/dragons.jpeg",
+    year: 2023,
+    genre: "Adventure",
+    duration: 102,
+    reviews: [
+      "Muy entretenida para toda la familia.",
+      "Los dragones son increíbles.",
+    ],
+  },
 ];
 
 export default function PeliculaPage() {

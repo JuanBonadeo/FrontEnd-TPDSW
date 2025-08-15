@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
+
 interface Movie {
   id: number;
   title: string;

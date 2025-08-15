@@ -11,7 +11,7 @@ export default function Page() {
       id: 1,
       title: "Frozen",
       rating: 4.8,
-      image: "/images/frozen.jpg",
+      image: "/images/frozen.jpeg",
       year: 2024,
       genre: "Sci-Fi",
     },
@@ -30,6 +30,14 @@ export default function Page() {
       image: "/images/sonic.jpg",
       year: 2023,
       genre: "Comedy",
+    },
+    {
+      id: 4,
+      title: "Como entrenar a tu dragón",
+      rating: 4.5,
+      image: "/images/dragons.jpeg",
+      year: 2023,
+      genre: "Animation",
     },
   ];
 

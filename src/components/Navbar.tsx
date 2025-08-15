@@ -3,10 +3,11 @@
 import Link from "next/link"
 import { Home, Search, Heart, User } from "lucide-react"
 import { usePathname } from "next/navigation"
+import { useState } from "react";
 
-//export function BottomNav() {
+
 export default function Navbar() {
-  // ...tu código...
+  
   const pathname = usePathname()
 
   return (
