@@ -1,30 +1,19 @@
 "use client"
+import Link from "next/link.js"
+import { redirect } from "next/navigation.js"
 import { useState } from "react"
 
-export default function LoginPage({
-  onLoginSuccess,
-  onSignup,
-  registeredUser,
-}: {
-  onLoginSuccess: () => void,
-  onSignup: () => void,
-  registeredUser: { email: string, password: string } | null
-}) {
+export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (
-      (registeredUser && email === registeredUser.email && password === registeredUser.password) ||
-      (email === "usuario@correo.com" && password === "123456")
-    ) {
-      setError("")
-      onLoginSuccess()
-    } else {
-      setError("Email o contraseña incorrectos")
-    }
+    console.log("Email:", email)
+    console.log("Password:", password)
+    window.location.replace('/');
+
   }
 
   return (
@@ -49,13 +38,12 @@ export default function LoginPage({
         />
         {error && <p className="text-red-500 mb-2">{error}</p>}
         <button type="submit" className="w-full bg-primary text-white p-2 rounded mb-2">Entrar</button>
-        <button
-            type="button"
-            className="w-full bg-gray-700 text-white p-2 rounded"
-            onClick={onSignup}
->
-            ¿No tienes cuenta? Regístrate
-            </button>
+        <Link
+          href="/auth/new-account"
+          className="w-full bg-gray-700 text-white p-2 rounded"
+        >
+          ¿No tienes cuenta? Regístrate
+        </Link>
       </form>
     </div>
   )

@@ -1,13 +1,8 @@
 "use client"
+import Link from "next/link.js"
 import { useState } from "react"
 
-export default function SignupPage({
-  onSignupSuccess,
-  onLogin,
-}: {
-  onSignupSuccess: (email: string, password: string) => void,
-  onLogin: () => void
-}) {
+export default function SignupPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -19,8 +14,6 @@ export default function SignupPage({
       return
     }
     setError("")
-    onSignupSuccess(email, password)
-    onLogin() // Redirige al login después de crear la cuenta
   }
 
   return (
@@ -45,13 +38,12 @@ export default function SignupPage({
         />
         {error && <p className="text-red-500 mb-2">{error}</p>}
         <button type="submit" className="w-full bg-primary text-white p-2 rounded mb-2">Crear cuenta</button>
-        <button
-          type="button"
+        <Link
+          href="/auth/login"
           className="w-full bg-gray-700 text-white p-2 rounded"
-          onClick={onLogin}
         >
           ¿Ya tienes cuenta? Inicia sesión
-        </button>
+        </Link>
       </form>
     </div>
   )
