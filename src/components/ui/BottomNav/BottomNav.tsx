@@ -11,7 +11,7 @@ export default function BottomNavbar() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around h-16 bg border-t">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around h-16 bg border-t-1 border-gray-700 ">
       <Link
         href="/"
         className={`flex flex-col items-center justify-center w-full h-full btn-press ${pathname === "/" ? "text-primary" : "text-muted-foreground"}`}

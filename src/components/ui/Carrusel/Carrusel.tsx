@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { Title } from '../title/Title';
 
 interface Movie {
   id: number;
@@ -35,7 +36,7 @@ export default function Carrusel({ movies }: CarruselProps) {
 
   return (
     <section className="mb-8">
-      <h2 className="text-xl font-semibold mb-4 text-gray-300">Películas en Tendencia</h2>
+      <Title title="Películas en Tendencia" size="2xl" />
       <div className="relative w-full">
         <div className="relative overflow-hidden bg-gray-800 border-red-500 border-2 rounded-lg">
           <div className="relative h-96 bg-gradient-to-t from-gray-900 to-transparent">

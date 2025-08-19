@@ -67,13 +67,23 @@ body {
 }
 
 .text-muted-foreground {
-  color: var(--color-red-50);
+  color: var(--color-stone-400);
 }
 
 .bg {
   background: var(--color-stone-900);
 }
-
 .bg2 {
   background: var(--color-stone-950);
+}
+.bg-primary {
+  background: var(--color-red-700);
+}
+.border {
+  border-color: var(--color-stone-400);
+}
+.active-tab {
+  color: var(--color-red-700);
+  border-bottom: 3px solid var(--color-red-700);
+
 }
