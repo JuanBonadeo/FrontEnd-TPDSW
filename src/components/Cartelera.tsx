@@ -21,7 +21,7 @@ const Cartelera: React.FC<CarteleraProps> = ({ movies }) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       {movies.map((movie) => (
         <Link href={`/pelicula/${movie.id}`} key={movie.id}>
-          <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center shadow cursor-pointer hover:bg-gray-700 transition">
+          <div className="bg rounded-lg p-4 flex flex-col items-center shadow cursor-pointer hover:opacity-85 transition">
             <img
               src={movie.image}
               alt={movie.title}

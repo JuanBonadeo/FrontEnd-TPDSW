@@ -3,7 +3,11 @@
 import { useState } from "react"
 import Carrusel from "@/components/ui/Carrusel/Carrusel"
 import Cartelera from "@/components/Cartelera"
-import Navbar from "@/components/Navbar"
+import BottomNavbar from "@/components/ui/BottomNav/BottomNav"
+import { Navbar } from "@/components/ui/NavBar/NavBar"
+
+
+
 
 
 
@@ -44,7 +48,7 @@ const movies = [
 export default function Page() {
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
+    <div className="min-h-screen  text-white p-4">
       <div className="max-w-4xl mx-auto">
         <Navbar />
         <h1 className="text-3xl font-bold mb-8 text-center">
@@ -58,6 +62,7 @@ export default function Page() {
           </p>
         </section>
         <Cartelera movies={movies} />
+        <BottomNavbar />
       </div>
     </div>
   )
