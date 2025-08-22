@@ -1,5 +1,5 @@
 import { ProfileHeader } from "@/components/Profile/ProfileHeader";
-import { ProfileTabs } from '../../components/Profile/ProfileTabs';
+import { ProfileTabs } from '../../../components/Profile/ProfileTabs';
 
 
 export default function ProfilePage() {

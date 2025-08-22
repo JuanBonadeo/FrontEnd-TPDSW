@@ -1,10 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import Carrusel from "@/components/ui/Carrusel/Carrusel"
 import BottomNavbar from "@/components/ui/BottomNav/BottomNav"
-import { Navbar } from "@/components/ui/NavBar/NavBar"
-import { MoviesGrid } from '../components/movies/Grid/MoviesGrid';
+import { MoviesGrid } from '../../components/movies/Grid/MoviesGrid';
 
 
 const movies = [

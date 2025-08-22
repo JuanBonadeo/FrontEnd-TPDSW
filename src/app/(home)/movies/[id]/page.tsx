@@ -1,7 +1,8 @@
-"use client";
+ 'use client';
 import { MovieDetail } from "@/components/movies/Detail/MovieDetail";
 import { ReviewSection } from "@/components/reviews/ReviewSection";
 import { useParams } from "next/navigation";
+
 
 export default function MovieDetailPage() {
   const params = useParams();
@@ -13,6 +14,7 @@ export default function MovieDetailPage() {
       ? params.id[0]
       : undefined;
 
+  
   return (
     <div className=" mx-auto ">
       <MovieDetail id={id} />
@@ -21,3 +23,6 @@ export default function MovieDetailPage() {
     </div>
   );
 }
+
+
+

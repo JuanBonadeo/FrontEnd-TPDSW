@@ -48,7 +48,7 @@ const reviewedMovies = [
 ]
 
 export function ProfileTabs() {
-  const [activeTab, setActiveTab] = useState("favorites")
+  const [activeTab, setActiveTab] = useState("favorites")  // favourites | vistas | resenias
 
   return (
     <div className="space-y-4">

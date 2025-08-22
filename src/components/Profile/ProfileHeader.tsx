@@ -28,7 +28,7 @@ export function ProfileHeader() {
           </div>
         </div>
         <div className="absolute top-4 right-4">
-          <Link className="bg-black/20 hover:bg-black/40 text-white" href="/settings">
+          <Link className="bg-black/20 hover:bg-black/40 text-white" href="profile/settings">
             <Settings className="w-5 h-5" />
           </Link>
         </div>
