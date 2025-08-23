@@ -1,8 +1,10 @@
+import { Title } from '../../../components/ui/title/Title';
 
 export default function FavouritesPage() {
   return (
-    <div>
-      <h1>Favourites Page</h1>
+    <div className='mt-10'>
+      <Title title='Favourites Page' size='2xl'/>
+      
     </div>
   );
 }

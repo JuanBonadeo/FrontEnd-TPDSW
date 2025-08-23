@@ -1,52 +1,35 @@
 "use client"
 
-import Carrusel from "@/components/ui/Carrusel/Carrusel"
+// import Carrusel from "@/components/ui/Carrusel/Carrusel"
 import BottomNavbar from "@/components/ui/BottomNav/BottomNav"
 import { MoviesGrid } from '../../components/movies/Grid/MoviesGrid';
 
+import { useMovies } from "@/hooks/useMovies";
 
-const movies = [
-  {
-    id: 1,
-    title: "Frozen",
-    rating: 4.8,
-    image: "",
-    year: 2024,
-    genre: "Sci-Fi",
-  },
-  {
-    id: 2,
-    title: "Ralph el Demoledor",
-    rating: 4.7,
-    image: "",
-    year: 2023,
-    genre: "Drama",
-  },
-  {
-    id: 3,
-    title: "Sonic",
-    rating: 4.5,
-    image: "",
-    year: 2023,
-    genre: "Comedy",
-  },
-  {
-    id: 4,
-    title: "Como entrenar a tu dragón",
-    rating: 4.5,
-    image: "",
-    year: 2023,
-    genre: "Adventure",
-  },
-]
-export default function Page() {
 
+interface Props {
+  searchParams: {
+    page?: string,
+    limit?: string
+  }
+}
+
+export default function Page({ searchParams }: Props) {
+  const page = searchParams.page ? parseInt(searchParams.page) : 1
+  const limit = searchParams.limit ? parseInt(searchParams.limit) : 10
+  const { movies, loading, error, totalPages } = useMovies(page, limit);
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error}</p>;
+  
+  // Si no hay películas, mostrar mensaje
+  if (movies.length === 0) return <p>No se encontraron películas.</p>;
   return (
 
     <>
-      <Carrusel movies={movies} />
+      {/* <Carrusel movies={movies} /> */}
 
       <MoviesGrid movies={movies} />
+      {/* <Pagintation totalPages={totalPages} /> */}
       <BottomNavbar />
 
 

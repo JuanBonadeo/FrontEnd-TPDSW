@@ -1,36 +1,22 @@
-import React from "react";
+
+
 import { MovieCard } from "../Card/MovieCard";
 import { Title } from "@/components/ui/title/Title";
-
-
-interface Movie {
-  id: number;
-  title: string;
-  rating: number;
-  image: string;
-  year: number;
-  genre: string;
-}
-
+import type { MovieApi } from "@/lib/types";
 
 interface Props {
-  movies: Movie[];
+  movies: MovieApi[];
 }
 
-export const MoviesGrid = ({ movies }: Props) => {
-  
-
-  
-  // Render the movies in a grid layout
-  return (
-    <section className="my-15">
-      <Title title="Top Rated" />
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+export const MoviesGrid = ({ movies }: Props) => (
+  <section className="my-15">
+    <Title title="Top Rated" />
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
       {movies.map((movie) => (
-        <MovieCard key={movie.id} {...movie} />
+        <MovieCard key={movie.id_movie} id_movie={movie.id_movie} title={movie.title} rating={movie.rating} poster_path={movie.poster_path} release_date={movie.release_date} />
       ))}
     </div>
   </section>
-  )
-}
+);
+
 
