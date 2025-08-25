@@ -1,100 +1,145 @@
-// "use client";
+"use client";
 
-// import { useState } from "react";
-// import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-// import { Title } from '../title/Title';
-// import { MovieApi } from "@/lib/types.js";
+import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { Title } from "../title/Title";
+import type { ApiResponse, Movie } from "@/lib/types";
+import { useMovie } from "@/hooks/useMovie";
 
+const tmdb = (p: string | null, size: "w1280" | "w780" | "original" = "w1280") =>
+  p ? `https://image.tmdb.org/t/p/${size}${p}` : "/placeholder.svg";
 
+type Id = number | string;
 
-// interface CarruselProps {
-//   movies: MovieApi[];
-// }
+interface Props {
+    ids: Id[];
+    title?: string;
+    autoPlayMs?: number;
+}
+export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,}: Props) {
 
-// export default function Carrusel({ movies }: CarruselProps) {
-//   const [currentSlide, setCurrentSlide] = useState(0);
+   const r1 = useMovie(ids[0]);
+  const r2 = useMovie(ids[1]);
+  const r3 = useMovie(ids[2]);
+  const r4 = useMovie(ids[3]);
+  const r5 = useMovie(ids[4]);
 
-//   const nextSlide = () => {
-//     setCurrentSlide((prev) => (prev + 1) % movies.length);
-//   };
+  const all = [r1, r2, r3, r4, r5];
+  const loading = all.some((r) => r.loading);
+  const error = all.find((r) => r.error)?.error ?? null;
+  const movies = all.map((r) => r.movie).filter(Boolean) as Movie[];
 
-//   const prevSlide = () => {
-//     setCurrentSlide((prev) => (prev - 1 + movies.length) % movies.length);
-//   };
+  const [current, setCurrent] = useState(0);
+  const len = movies.length;
+  const wrap = (i: number) => (len ? (i + len) % len : 0);
+  const next = useCallback(() => setCurrent((p) => wrap(p + 1)), [len]);
+  const prev = useCallback(() => setCurrent((p) => wrap(p - 1)), [len]);
 
-//   const goToSlide = (index: number) => {
-//     setCurrentSlide(index);
-//   };
+  useEffect(() => {
+    if (!autoPlayMs || len <= 1) return;
+    const id = setInterval(next, autoPlayMs);
+    return () => clearInterval(id);
+  }, [autoPlayMs, len, next]);
 
-//   const currentMovie = movies[currentSlide];
+  // Loading único
+  if (loading || len < 5) {
+    return (
+      <section className="mb-8">
+        <Title title={title} size="2xl" />
+        <div className="h-96 w-full animate-pulse rounded-lg bg-muted/40" />
+      </section>
+    );
+  }
 
-//   return (
-//     <section className="mb-8">
-//       <Title title="Películas en Tendencia" size="2xl" />
-//       <div className="relative w-full">
-//         <div className="relative overflow-hidden bg-gray-800 border-red-500 border-2 rounded-lg">
-//           <div className="relative h-96 bg-gradient-to-t from-gray-900 to-transparent">
-//             <img
-//               src={currentMovie.image || "/placeholder.svg"}
-//               alt={currentMovie.title}
-//               className="w-full h-full object-cover transition-opacity duration-500"
-//               onError={(e) => {
-//                 const target = e.target as HTMLImageElement;
-//                 target.src = "/placeholder.svg?height=400&width=600";
-//               }}
-//             />
-//             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
-//             <button
-//               type="button"
-//               className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-black/30 rounded-full p-2 hover:bg-black/50 transition-all duration-200 backdrop-blur-sm"
-//               onClick={prevSlide}
-//               aria-label="Película anterior"
-//             >
-//               <ChevronLeft className="h-6 w-6" />
-//             </button>
-//             <button
-//               type="button"
-//               className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-black/30 rounded-full p-2 hover:bg-black/50 transition-all duration-200 backdrop-blur-sm"
-//               onClick={nextSlide}
-//               aria-label="Siguiente película"
-//             >
-//               <ChevronRight className="h-6 w-6" />
-//             </button>
-//             <div className="absolute bottom-4 left-4 right-4">
-//               <div className="flex items-end justify-between">
-//                 <div>
-//                   <h4 className="text-xl font-bold mb-2 text-white drop-shadow-lg">{currentMovie.title}</h4>
-//                   <div className="flex items-center gap-3 mb-2">
-//                     <div className="flex items-center gap-1">
-//                       <Star className="h-4 w-4 fill-red-500 text-red-500" />
-//                       <span className="text-sm font-medium text-white">{currentMovie.rating}</span>
-//                     </div>
-//                     <span className="text-sm text-gray-300">{currentMovie.year}</span>
-//                     <span className="text-sm text-gray-300 bg-black/30 px-2 py-1 rounded">
-//                       {currentMovie.genre}
-//                     </span>
-//                   </div>
-//                 </div>
-//                 <div className="text-xs text-gray-300 bg-black/30 px-2 py-1 rounded backdrop-blur-sm">
-//                   {currentSlide + 1} / {movies.length}
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//         <div className="flex justify-center gap-2 mt-4">
-//           {movies.map((_, index) => (
-//             <button
-//               key={index}
-//               className={`w-2 h-2 rounded-full transition-all duration-200 hover:scale-125 ${
-//                 index === currentSlide ? "bg-red-500 w-6" : "bg-gray-600 hover:bg-gray-500"
-//               }`}
-//               onClick={() => goToSlide(index)}
-//               aria-label={`Ir a película ${index + 1}`}
-//             />
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
+  if (error) {
+    return (
+      <section className="mb-8">
+        <Title title={title} size="2xl" />
+        <div className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-300">
+          Error al cargar: {error}
+        </div>
+      </section>
+    );
+  }
+
+  const m = movies[current];
+  const img = tmdb(m.backdrop_path ?? m.poster_path, "w1280");
+  const year = m.release_date ? String(m.release_date) : "";
+
+  return (
+    <section className="mb-8">
+      <Title title={title} size="2xl" />
+
+      <div className="relative overflow-hidden rounded-lg border-2 border-red-500 bg-gray-800">
+        <div className="relative h-110">
+          <Link href={`/movies/${m.id_movie}`} className="absolute inset-0">
+            <Image src={img} alt={m.title} fill priority sizes="100vw" className="object-cover" />
+          </Link>
+
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent" />
+
+          {/* Controles */}
+          <button
+            type="button"
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50"
+            onClick={prev}
+            aria-label="Película anterior"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            type="button"
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50"
+            onClick={next}
+            aria-label="Siguiente película"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
+          {/* Info */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <div className="flex items-end justify-between">
+              <div>
+                <Link href={`/movies/${m.id_movie}`}>
+                  <h4 className="mb-2 line-clamp-2 text-xl font-bold text-white drop-shadow-lg">{m.title}</h4>
+                </Link>
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 text-red-600" fill="red" />
+                    <span className="text-sm font-medium text-white">
+                      {m.rating?.toFixed?.(1) ?? m.rating}
+                    </span>
+                  </div>
+                  {year && <span className="text-sm text-gray-300">{year}</span>}
+                </div>
+              </div>
+              <div className="rounded bg-black/30 px-2 py-1 text-xs text-gray-300 backdrop-blur-sm">
+                {current + 1} / {len}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Dots */}
+      <div className="mt-4 flex justify-center gap-2">
+        {movies.map((_, i) => {
+          const active = i === current;
+          return (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              aria-label={`Ir a película ${i + 1}`}
+              className={
+                "h-2 rounded-full transition-all duration-200 hover:scale-125 " +
+                (active ? "w-6 bg-red-500" : "w-2 bg-gray-600 hover:bg-gray-500")
+              }
+            />
+          );
+        })}
+      </div>
+    </section>
+  );
+}

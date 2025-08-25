@@ -25,10 +25,14 @@ export function useMovie(id: string | number) {
 
 
         const text = await res.text();
-        if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.slice(0, 200)}`);
+        if (!res.ok) {
+          setError(`Error ${res.status}: ${text}`);
+        }
 
         const json = JSON.parse(text) as ApiResponse<Movie>;
-        if (!json.success) throw new Error(json.message || "Error en API");
+        if (!json.success) {
+          setError(json.message || "Error en API");
+        }
 
         if (!cancel) setMovie(json.data);
       } catch (e: any) {
