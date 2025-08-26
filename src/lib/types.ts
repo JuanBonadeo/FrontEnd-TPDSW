@@ -11,7 +11,7 @@ export interface Movie {
   backdrop_path: string | null;
   Category?: { id_category: number; name: string };
   Director?: { first_name: string; last_name: string; profile_path?: string | null };
-  Movie_Actor?: { character: string; Actor: { first_name: string; last_name: string; profile_path?: string | null } }[];
+  Movie_Actor?: { character: string; Actor: { id_actor: number; first_name: string; last_name: string; profile_path?: string | null } }[];
 }
 
 // lib/types.ts
@@ -36,3 +36,15 @@ export interface MovieApi {
   // ...otros campos que devuelve la API
 }
 
+export interface Actor {
+  id_actor: number;
+  first_name: string;
+  last_name: string;
+  birth_date: string;       // ISO
+  tmdb_id: number;
+  profile_path: string | null;
+  biography: string;
+  birth_place: string | null;
+  gender: number | null;
+  created_at: string;
+}

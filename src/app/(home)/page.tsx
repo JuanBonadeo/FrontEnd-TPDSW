@@ -2,11 +2,13 @@
 import Carrusel from "@/components/ui/Carrusel/Carrusel";
 import { metadata } from "./layout.jsx";
 import MoviesClient from "./MoviesClient";
-// import Carousel from '../../components/ui/Carrusel/Carrusel';
 
 
-export default function Page({ searchParams }: { searchParams?: { page?: string } }) {
-  const page = Number(searchParams?.page ?? "1") || 1;
+
+
+export default async function Page({ searchParams }: { searchParams?: { page?: string } }) {
+  const params = await searchParams; 
+  const page = Number(params?.page ?? "1") || 1;
 
   return (
     <>

@@ -6,11 +6,12 @@ import type { MovieApi } from "@/lib/types";
 
 interface Props {
   movies: MovieApi[];
+  title: string;
 }
 
-export const MoviesGrid = ({ movies }: Props) => (
+export const MoviesGrid = ({ movies, title }: Props) => (
   <section className="my-15">
-    <Title title="Top Rated" />
+    <Title title={title} />
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
       {movies.map((movie) => (
         <MovieCard key={movie.id_movie} id_movie={movie.id_movie} title={movie.title} rating={movie.rating} poster_path={movie.poster_path} release_date={movie.release_date} />

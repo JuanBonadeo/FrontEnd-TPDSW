@@ -2,38 +2,14 @@
 import Image from "next/image"
 import { Star, Heart, Check, Clock, Calendar, Hand } from "lucide-react"
 import { getImageUrl } from "@/utils/getImageUrl"
+import Link from "next/link"
+import { Movie } from "@/lib/types.js"
 
-interface MovieDetailProps {
-  movie: {
-    id_movie: number
-    title: string
-    description: string
-    duration: number
-    release_date: number
-    rating: number
-    poster_path: string | null
-    backdrop_path: string | null
-    Category?: {
-      id_category: number
-      name: string
-    }
-    Director?: {
-      first_name: string
-      last_name: string
-      profile_path?: string | null
-    }
-    Movie_Actor?: {
-      character: string
-      Actor: {
-        first_name: string
-        last_name: string
-        profile_path?: string | null
-      }
-    }[]
-  }
+interface Props {
+  movie: Movie
 }
 
-export function MovieDetail({ movie }: MovieDetailProps) {
+export function MovieDetail( {movie} : Props) {
   
   return (
     <div className="space-y-6">
@@ -117,9 +93,9 @@ export function MovieDetail({ movie }: MovieDetailProps) {
                   height={60}
                   className="rounded-full object-cover"
                 />
-                <p className="text-sm font-medium mt-2">
+                <Link className="text-sm font-medium mt-2" href={`/actors/${Actor.id_actor}`}>
                   {Actor.first_name} {Actor.last_name}
-                </p>
+                </Link>
                 <p className="text-xs text-muted-foreground">{character}</p>
               </div>
             ))}
@@ -142,8 +118,6 @@ export function MovieDetail({ movie }: MovieDetailProps) {
             </p>
           </div>
         </div>
-
-
 
       </div>
     </div>
