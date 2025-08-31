@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Title } from "../title/Title";
-import type { ApiResponse, Movie } from "@/lib/types";
+import type { Movie } from "@/lib/types";
 import { useMovie } from "@/hooks/useMovie";
 
 const tmdb = (p: string | null, size: "w1280" | "w780" | "original" = "w1280") =>
@@ -48,7 +48,7 @@ export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,
     return (
       <section className="mb-8">
         <Title title={title} size="2xl" />
-        <div className="h-96 w-full animate-pulse rounded-lg bg-muted/40" />
+        <div className="h-110 w-full animate-pulse rounded-lg bg" />
       </section>
     );
   }

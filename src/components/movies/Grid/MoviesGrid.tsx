@@ -10,6 +10,7 @@ interface Props {
 }
 
 export const MoviesGrid = ({ movies, title }: Props) => (
+  
   <section className="my-15">
     <Title title={title} />
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">

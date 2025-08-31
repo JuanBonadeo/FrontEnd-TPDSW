@@ -1,12 +1,14 @@
 "use client";
 import { ReviewSection } from "@/components/reviews/ReviewSection";
+import { ReviewSectionSkeleton } from "@/components/reviews/ReviewSectionSkeleton";
 import { useReviewsByMovieId } from "@/hooks/useReviewsByMovieId";
+
 
 export default function ReviewSectionClient({ id }: { id: string }) {
  const { reviews, loading, error } = useReviewsByMovieId(id);
 
-  if (loading) return <p>Cargando reseñas...</p>;
+  if (loading) return <ReviewSectionSkeleton />;
   if (error) return <p>Error: {error} </p>;
-  if (!reviews.length) return <p>Sin reseñas todavía.</p>;
+  if (!reviews.length && !loading && !error) return <p>Sin reseñas todavía.</p>;
   return <ReviewSection  reviews={reviews} />;
 }

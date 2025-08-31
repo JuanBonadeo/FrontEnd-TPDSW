@@ -11,7 +11,6 @@ export default function MoviesClient({ page, limit }: { page: number; limit: num
 
   if (loading) return <MoviesGridSkeleton />;
   if (error) return <p>Error: {error}</p>;
-  if (!movies.length) return <p>No se encontraron películas.</p>;
 
   return (
     <>

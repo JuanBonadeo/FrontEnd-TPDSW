@@ -65,7 +65,7 @@ export const Pagination = ({ totalPages }: Props) => {
               <li className="page-item">
                 <Link
                   href={createPageUrl(Math.max(1, currentPage - 1))}
-                  className={`${linkBase} text-gray-800 hover:text-gray-800 hover:bg-gray-200`}
+                  className={`${linkBase} text-primary hover:bg-gray-200`}
                   aria-label="Página anterior"
                 >
                   <SkipBack size={22} />
@@ -81,7 +81,7 @@ export const Pagination = ({ totalPages }: Props) => {
             if (page === '...') {
               return (
                 <li className="page-item" key={key}>
-                  <span className={`${linkBase} text-gray-500 select-none cursor-default`}>…</span>
+                  <span className={`${linkBase} text-primary select-none cursor-default`}>…</span>
                 </li>
               );
             }
@@ -94,8 +94,8 @@ export const Pagination = ({ totalPages }: Props) => {
                     linkBase +
                     ' ' +
                     (isActive
-                      ? 'bg-primary shadow-md text-white hover:bg-blue-700 hover:text-white'
-                      : 'text-gray-800 hover:text-gray-800 hover:bg-gray-400')
+                      ? 'bg-primary shadow-md '
+                      : 'text-primary hover:bg-gray-200')
                   }
                   aria-current={isActive ? 'page' : undefined}
                 >
@@ -110,7 +110,7 @@ export const Pagination = ({ totalPages }: Props) => {
             <li className="page-item">
               <Link
                 href={createPageUrl(Math.min(totalPages, currentPage + 1))}
-                className={`${linkBase} text-gray-800 hover:text-gray-800 hover:bg-gray-200`}
+                className={`${linkBase} text-primary hover:bg-gray-200`}
                 aria-label="Página siguiente"
               >
                 <SkipBack size={22} className="rotate-180" />
