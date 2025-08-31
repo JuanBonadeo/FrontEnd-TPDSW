@@ -19,6 +19,8 @@ export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data: T;
+  error?: string;    
+  code?: string;
   pagination?: {
     total: number;
     page: number;
@@ -47,4 +49,21 @@ export interface Actor {
   birth_place: string | null;
   gender: number | null;
   created_at: string;
+}
+
+export interface ReviewUser {
+  id: string;
+  name: string | null;
+  image: string | null;
+}
+
+export interface Review {
+  id_review: number;
+  id_user: string;
+  id_movie: number;
+  score: number;                 // Normalizado a number
+  comment: string;
+  review_date: string;
+  updated_at: string;
+  User?: ReviewUser | null;
 }

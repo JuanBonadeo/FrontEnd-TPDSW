@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Title } from "../title/Title";
 import type { Movie } from "@/lib/types";
-import { useMovie } from "@/hooks/useMovie";
+import { useApi } from "@/hooks/useApi";
 
 const tmdb = (p: string | null, size: "w1280" | "w780" | "original" = "w1280") =>
   p ? `https://image.tmdb.org/t/p/${size}${p}` : "/placeholder.svg";
@@ -19,17 +19,16 @@ interface Props {
     autoPlayMs?: number;
 }
 export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,}: Props) {
-
-   const r1 = useMovie(ids[0]);
-  const r2 = useMovie(ids[1]);
-  const r3 = useMovie(ids[2]);
-  const r4 = useMovie(ids[3]);
-  const r5 = useMovie(ids[4]);
+  const r1 = useApi<Movie>(`/movies/${ids[0]}`);
+  const r2 = useApi<Movie>(`/movies/${ids[1]}`);
+  const r3 = useApi<Movie>(`/movies/${ids[2]}`);
+  const r4 = useApi<Movie>(`/movies/${ids[3]}`);
+  const r5 = useApi<Movie>(`/movies/${ids[4]}`);
 
   const all = [r1, r2, r3, r4, r5];
   const loading = all.some((r) => r.loading);
   const error = all.find((r) => r.error)?.error ?? null;
-  const movies = all.map((r) => r.movie).filter(Boolean) as Movie[];
+  const movies = all.map((r) => r.data).filter(Boolean) as Movie[];
 
   const [current, setCurrent] = useState(0);
   const len = movies.length;
@@ -83,7 +82,7 @@ export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,
           {/* Controles */}
           <button
             type="button"
-            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50"
+            className="cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50"
             onClick={prev}
             aria-label="Película anterior"
           >
@@ -91,7 +90,7 @@ export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,
           </button>
           <button
             type="button"
-            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50"
+            className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50"
             onClick={next}
             aria-label="Siguiente película"
           >

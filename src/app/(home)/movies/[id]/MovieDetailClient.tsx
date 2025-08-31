@@ -2,13 +2,18 @@
 
 import { MovieDetail } from "@/components/movies/Detail/MovieDetail";
 import { MovieDetailSkeleton } from "@/components/movies/Detail/MovieDetailSkeleton";
-import { useMovie } from "@/hooks/useMovie";
+import { useApi } from "@/hooks/useApi";
+import { Movie } from "@/lib/types";
+import { notFound } from "next/navigation.js";
 
 export default function MovieDetailClient({ id }: { id: string }) {
-  const { movie, loading, error } = useMovie(id);
-
+  const { data: movie, loading, error, errorCode } = useApi<Movie>(
+    id ? `/movies/${id}` : null
+  );
+  if( errorCode === "NOT_FOUND") return notFound();
   if (loading) return <MovieDetailSkeleton />;
-  if (error) return <div className="text-sm text-red-400">{error}</div>;
+  if (error) return <div>Error loading movie details: {error}</div>;
+  if (!movie) return <div>No movie data found</div>;
   return (
     <MovieDetail movie={movie} />
   );
