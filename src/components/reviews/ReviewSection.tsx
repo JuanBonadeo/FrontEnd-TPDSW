@@ -1,9 +1,9 @@
 
 import { Star } from "lucide-react"
-import Image from "next/image.js"
+import Image from "next/image"
 import { Title } from "../ui/title/Title"
 import { ReviewCard } from "./ReviewCard"
-import { Review } from '../../hooks/useReviewsByMovieId';
+import { Review } from '@/lib/types'
 
 
 

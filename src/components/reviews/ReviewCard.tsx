@@ -1,6 +1,7 @@
 
 
-import { Review } from '@/hooks/useReviewsByMovieId'
+
+import { Review } from '@/lib/types.js'
 import { Star } from 'lucide-react'
 import Image from 'next/image.js'
 import React from 'react'

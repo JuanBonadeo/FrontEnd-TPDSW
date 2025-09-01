@@ -10,6 +10,7 @@ interface UseApiOptions<T> {
   enabled?: boolean;
   handleNotFound?: boolean;
   handleUnauthorized?: boolean;
+  requireAuth?: boolean; // Nueva opción para endpoints que requieren autenticación
   onError?: (message: string, code?: string) => void;
 }
 
@@ -28,6 +29,7 @@ export function useApi<T>(
     enabled = true,
     handleNotFound = true,
     handleUnauthorized = true,
+    requireAuth = false,
     onError
   } = options;
 
@@ -38,8 +40,24 @@ export function useApi<T>(
 
   const router = useRouter();
 
+  // Función para obtener el token del localStorage
+  const getAuthToken = (): string | null => {
+    
+      const token = localStorage.getItem('token');
+      return token;
+    
+  };
+
   useEffect(() => {
     if (!endpoint || !enabled) {
+      setLoading(false);
+      return;
+    }
+
+    // Si requiere autenticación pero no hay token, no hacer la petición
+    if (requireAuth && !getAuthToken()) {
+      setError("Token de autenticación requerido");
+      setErrorCode("NO_TOKEN");
       setLoading(false);
       return;
     }
@@ -56,9 +74,18 @@ export function useApi<T>(
       try {
         const url = endpoint.startsWith("http") ? endpoint : `${API_BASE}${endpoint}`;
         
-        const res = await fetch(url, {
-          headers: { "Accept": "application/json" }
-        });
+        // Preparar headers
+        const headers: Record<string, string> = {
+          "Accept": "application/json"
+        };
+
+        // Agregar token si está disponible y se requiere autenticación
+        const token = getAuthToken();
+        if (requireAuth && token) {
+          headers["Authorization"] = `Bearer ${token}`;
+        }
+        
+        const res = await fetch(url, { headers });
 
         if (cancelled) return;
 
@@ -78,9 +105,8 @@ export function useApi<T>(
             setTimeout(() => notFound(), 10);
             return;
           }
-          
           if (code === "UNAUTHORIZED" && handleUnauthorized) {
-            setTimeout(() => router.push("/login"), 10);
+            setTimeout(() => router.push("auth/login"), 10);
             return;
           }
 
@@ -90,12 +116,16 @@ export function useApi<T>(
         // Success
         setData(json.data);
 
-      } catch (err) {
+      } catch (err: unknown) {
         if (cancelled) return;
-        
-        setError(err.message || "Error de red");
+
+        let errorMessage = "Error de red";
+        if (err instanceof Error) {
+          errorMessage = err.message;
+        }
+        setError(errorMessage);
         setErrorCode("FETCH_ERROR");
-        onError?.(err.message || "Error de red", "FETCH_ERROR");
+        onError?.(errorMessage, "FETCH_ERROR");
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -108,7 +138,7 @@ export function useApi<T>(
     return () => {
       cancelled = true;
     };
-  }, [endpoint, enabled, handleNotFound, handleUnauthorized, onError, router]);
+  }, [endpoint, enabled, handleNotFound, handleUnauthorized, requireAuth, onError, router]);
 
   return {
     data,
@@ -117,9 +147,6 @@ export function useApi<T>(
     errorCode,
   };
 }
-
-
-
 
 interface UseApiPaginatedResult<T> {
   data: T | null;
@@ -139,17 +166,20 @@ export function useApiPaginated<T>(
 ): UseApiPaginatedResult<T> {
   const [totalPages, setTotalPages] = useState(0);
 
-  // Construir endpoint con parámetros de paginación
   const paginatedEndpoint = endpoint 
     ? `${endpoint}?page=${page}&limit=${pageSize}` 
     : null;
 
   const { data, loading, error, errorCode } = useApi<T>(paginatedEndpoint, options);
 
-  // Extraer totalPages cuando lleguen los datos
   useEffect(() => {
     if (data && !loading && !error) {
-      const response = data as any;
+      type PaginatedResponse = {
+        pagination?: { totalPages?: number };
+        totalPages?: number;
+        meta?: { totalPages?: number };
+      };
+      const response = data as PaginatedResponse;
       const tp = response?.pagination?.totalPages || 
                  response?.totalPages || 
                  response?.meta?.totalPages ||

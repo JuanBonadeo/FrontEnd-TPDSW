@@ -4,137 +4,69 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, Heart, Check } from "lucide-react";
-const user = {
-  name: "María López",
-  username: "@marialopez",
-  avatar: "/placeholder.svg?height=100&width=100",
-  initials: "ML",
-  bio: "Cinéfila apasionada | Crítica de cine amateur | Amante del terror y la ciencia ficción",
-  stats: {
-    reviews: 127,
-    favorites: 58,
-    watched: 342,
-  },
-};
-const favoriteMovies = [
-  {
-    id: 1,
-    title: "Dune: Part Two",
-    rating: 4.8,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 2,
-    title: "Oppenheimer",
-    rating: 4.7,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 3,
-    title: "Poor Things",
-    rating: 4.5,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 4,
-    title: "The Batman",
-    rating: 4.6,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 5,
-    title: "Barbie",
-    rating: 4.4,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 6,
-    title: "Killers of the Flower Moon",
-    rating: 4.3,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-];
+import { Movie } from "@/lib/types";
+import { getImageUrl } from "@/utils/getImageUrl";
 
-const watchedMovies = [
-  {
-    id: 7,
-    title: "The Godfather",
-    rating: 4.9,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 8,
-    title: "The Shawshank Redemption",
-    rating: 4.9,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 9,
-    title: "The Dark Knight",
-    rating: 4.8,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 10,
-    title: "Pulp Fiction",
-    rating: 4.8,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 11,
-    title: "Fight Club",
-    rating: 4.7,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 12,
-    title: "Inception",
-    rating: 4.7,
-    image: "/placeholder.svg?height=300&width=200",
-  },
-];
+export interface UserStats {
+  id: string;
+  name: string;
+  email: string;
+  password: string; // hash
+  birth_date: string; // ISO string
+  role: "USER" | "ADMIN"; // ampliar si tenés más roles
+  isActive: boolean;
+  emailVerified: boolean;
+  image: string | null;
+  created_at: string;
+  updated_at: string;
+  Favorite: Favorite[];
+  Review: Review[];
+  _count: UserCount;
+}
 
-const reviewedMovies = [
-  {
-    id: 13,
-    title: "Dune: Part Two",
-    rating: 5,
-    review: "Una secuela espectacular que supera a la primera parte.",
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 14,
-    title: "Oppenheimer",
-    rating: 4.5,
-    review: "Una obra maestra técnica con actuaciones sobresalientes.",
-    image: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: 15,
-    title: "Poor Things",
-    rating: 4,
-    review: "Visualmente impresionante y con una narrativa única.",
-    image: "/placeholder.svg?height=300&width=200",
-  },
-];
+export interface Favorite {
+  id_user: string;
+  id_movie: number;
+  created_at: string;
+  Movie: Movie
+}
 
-export function ProfileTabs() {
+export interface Review {
+  id_review: number;
+  id_user: string;
+  id_movie: number;
+  score: string;
+  comment: string;
+  review_date: string;
+  updated_at: string;
+  Movie: Movie
+}
+
+export interface UserCount {
+  Favorite: number;
+  Review: number;
+}
+
+interface Props {
+  userStats: UserStats;
+}
+export function ProfileTabs({userStats}: Props) {
   const [activeTab, setActiveTab] = useState("favorites"); // favourites | vistas | resenias
 
   return (
     <div className="space-y-4">
       <div className="flex gap-6 pt-2">
         <div className="text-center">
-          <p className="text-lg font-bold">{user.stats.reviews}</p>
-          <p className="text-xs text-muted-foreground">Reseñas</p>
-        </div>
-        <div className="text-center">
-          <p className="text-lg font-bold">{user.stats.favorites}</p>
+          <p className="text-lg font-bold">{userStats._count.Review}</p>
           <p className="text-xs text-muted-foreground">Favoritos</p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold">{user.stats.watched}</p>
+          <p className="text-lg font-bold">21</p>
           <p className="text-xs text-muted-foreground">Vistas</p>
+        </div>
+        <div className="text-center">
+          <p className="text-lg font-bold">{userStats._count.Review}</p>
+          <p className="text-xs text-muted-foreground">Reseñas</p>
         </div>
       </div>
       <div className="flex border-gray-700 border-b">
@@ -166,13 +98,13 @@ export function ProfileTabs() {
 
       {activeTab === "favorites" && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {favoriteMovies.map((movie) => (
-            <Link key={movie.id} href={`/movies/${movie.id}`}>
+          {userStats.Favorite.map((favourite) => (
+            <Link key={favourite.id_movie} href={`/movies/${favourite.id_movie}`}>
               <div className="relative group card-hover">
                 <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg">
                   <Image
-                    src={movie.image || "/placeholder.svg"}
-                    alt={movie.title}
+                    src={getImageUrl(favourite.Movie?.poster_path) || "/placeholder.svg"}
+                    alt={favourite.Movie.title}
                     fill
                     className="object-cover"
                   />
@@ -182,11 +114,11 @@ export function ProfileTabs() {
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <h3 className="text-sm font-medium text-white line-clamp-2">
-                      {movie.title}
+                      {favourite.Movie.title}
                     </h3>
                     <div className="flex items-center mt-1">
                       <Star className="w-3 h-3 mr-1 text-primary" fill="red" />
-                      <span className="text-xs text-white">{movie.rating}</span>
+                      <span className="text-xs text-white">{favourite.Movie.rating}</span>
                     </div>
                   </div>
                 </div>
@@ -196,15 +128,15 @@ export function ProfileTabs() {
         </div>
       )}
 
-      {activeTab === "watched" && (
+      {/* {activeTab === "watched" && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {watchedMovies.map((movie) => (
-            <Link key={movie.id} href={`/movies/${movie.id}`}>
+          {watchedMovies.map((Movie) => (
+            <Link key={Movie.id} href={`/Movies/${Movie.id}`}>
               <div className="relative group card-hover">
                 <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg">
                   <Image
-                    src={movie.image || "/placeholder.svg"}
-                    alt={movie.title}
+                    src={Movie.image || "/placeholder.svg"}
+                    alt={Movie.title}
                     fill
                     className="object-cover"
                   />
@@ -214,11 +146,11 @@ export function ProfileTabs() {
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <h3 className="text-sm font-medium text-white line-clamp-2">
-                      {movie.title}
+                      {Movie.title}
                     </h3>
                     <div className="flex items-center mt-1">
                       <Star className="w-3 h-3 mr-1 text-primary" fill="red" />
-                      <span className="text-xs text-white">{movie.rating}</span>
+                      <span className="text-xs text-white">{Movie.rating}</span>
                     </div>
                   </div>
                 </div>
@@ -226,39 +158,39 @@ export function ProfileTabs() {
             </Link>
           ))}
         </div>
-      )}
+      )} */}
 
       {activeTab === "reviews" && (
         <div className="space-y-4">
-          {reviewedMovies.map((movie) => (
-            <Link key={movie.id} href={`/movies/${movie.id}`}>
+          {userStats.Review.map((review) => (
+            <Link key={review.id_movie} href={`/movies/${review.id_movie}`}>
               <div className="flex gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="relative flex-shrink-0 w-16 h-24">
                   <Image
-                    src={movie.image || "/placeholder.svg"}
-                    alt={movie.title}
+                    src={getImageUrl(review.Movie?.poster_path) || "/placeholder.svg"}
+                    alt={review.Movie.title}
                     fill
                     className="object-cover rounded-md"
                   />
                 </div>
                 <div className="flex flex-col justify-between flex-grow">
                   <div>
-                    <h3 className="font-medium">{movie.title}</h3>
+                    <h3 className="font-medium">{review.Movie.title}</h3>
                     <div className="flex items-center mt-1 mb-2">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
                           className={`w-4 h-4 ${
-                            i < Math.floor(movie.rating)
+                            i < Math.floor(review.Movie.rating)
                               ? "text-primary"
                               : "text-muted"
                           }`}
-                          fill={i < Math.floor(movie.rating) ? "red" : "none"}
+                          fill={i < Math.floor(review.Movie.rating) ? "red" : "none"}
                         />
                       ))}
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {movie.review}
+                      {review.comment}
                     </p>
                   </div>
                 </div>

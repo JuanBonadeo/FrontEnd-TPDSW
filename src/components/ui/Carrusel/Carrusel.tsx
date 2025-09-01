@@ -73,16 +73,16 @@ export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,
 
       <div className="relative overflow-hidden rounded-lg border-2 border-red-500 bg-gray-800">
         <div className="relative h-110">
-          <Link href={`/movies/${m.id_movie}`} className="absolute inset-0">
+          <Link href={`/movies/${m.id_movie}`} className="absolute inset-0 z-10">
             <Image src={img} alt={m.title} fill priority sizes="100vw" className="object-cover" />
           </Link>
 
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent pointer-events-none" />
 
           {/* Controles */}
           <button
             type="button"
-            className="cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50"
+            className="cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50 z-20"
             onClick={prev}
             aria-label="Película anterior"
           >
@@ -90,7 +90,7 @@ export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,
           </button>
           <button
             type="button"
-            className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50"
+            className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/50 z-20"
             onClick={next}
             aria-label="Siguiente película"
           >
@@ -98,12 +98,10 @@ export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,
           </button>
 
           {/* Info */}
-          <div className="absolute bottom-4 left-4 right-4">
+          <div className="absolute bottom-4 left-4 right-4 pointer-events-none z-20">
             <div className="flex items-end justify-between">
               <div>
-                <Link href={`/movies/${m.id_movie}`}>
-                  <h4 className="mb-2 line-clamp-2 text-xl font-bold text-white drop-shadow-lg">{m.title}</h4>
-                </Link>
+                <h4 className="mb-2 line-clamp-2 text-xl font-bold text-white drop-shadow-lg">{m.title}</h4>
                 <div className="mb-2 flex items-center gap-3">
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 text-red-600" fill="red" />

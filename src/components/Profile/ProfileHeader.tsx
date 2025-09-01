@@ -33,7 +33,7 @@ export function ProfileHeader({user}: Props) {
           <h1 className="text-2xl font-bold">{user.name}</h1>
           <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
-        <p>CineCritic de {age} años</p>
+        <p className="font-bold">CineCritic de {age} años.</p>
       </div>
     </div>
   )
