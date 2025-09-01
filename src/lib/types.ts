@@ -67,3 +67,42 @@ export interface Review {
   updated_at: string;
   User?: ReviewUser | null;
 }
+
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  birth_date: string;
+  role: string;
+  isActive: boolean;
+  emailVerified: boolean;
+  image: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  birth_date: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface UseAuthResult {
+  loading: boolean;
+  error: string | null;
+  register: (data: RegisterData) => Promise<void>;
+  login: (data: LoginData) => Promise<void>;
+  logout: () => void;
+}

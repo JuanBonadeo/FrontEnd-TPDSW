@@ -40,11 +40,11 @@ export const Pagination = ({ totalPages }: Props) => {
       return `${pathname}?${p.toString()}`;
     }
 
-    if (pageNumber <= 0) {
+    if (typeof pageNumber === 'number' && pageNumber <= 0) {
       return `${pathname}`;
     }
 
-    if (pageNumber > totalPages) {
+    if (typeof pageNumber === 'number' && pageNumber > totalPages) {
       return `${pathname}?${p.toString()}`;
     }
 

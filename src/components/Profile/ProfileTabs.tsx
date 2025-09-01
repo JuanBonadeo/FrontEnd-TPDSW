@@ -1,27 +1,98 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Star, Heart, Check } from "lucide-react"
-
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Star, Heart, Check } from "lucide-react";
+const user = {
+  name: "María López",
+  username: "@marialopez",
+  avatar: "/placeholder.svg?height=100&width=100",
+  initials: "ML",
+  bio: "Cinéfila apasionada | Crítica de cine amateur | Amante del terror y la ciencia ficción",
+  stats: {
+    reviews: 127,
+    favorites: 58,
+    watched: 342,
+  },
+};
 const favoriteMovies = [
-  { id: 1, title: "Dune: Part Two", rating: 4.8, image: "/placeholder.svg?height=300&width=200" },
-  { id: 2, title: "Oppenheimer", rating: 4.7, image: "/placeholder.svg?height=300&width=200" },
-  { id: 3, title: "Poor Things", rating: 4.5, image: "/placeholder.svg?height=300&width=200" },
-  { id: 4, title: "The Batman", rating: 4.6, image: "/placeholder.svg?height=300&width=200" },
-  { id: 5, title: "Barbie", rating: 4.4, image: "/placeholder.svg?height=300&width=200" },
-  { id: 6, title: "Killers of the Flower Moon", rating: 4.3, image: "/placeholder.svg?height=300&width=200" },
-]
+  {
+    id: 1,
+    title: "Dune: Part Two",
+    rating: 4.8,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 2,
+    title: "Oppenheimer",
+    rating: 4.7,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 3,
+    title: "Poor Things",
+    rating: 4.5,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 4,
+    title: "The Batman",
+    rating: 4.6,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 5,
+    title: "Barbie",
+    rating: 4.4,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 6,
+    title: "Killers of the Flower Moon",
+    rating: 4.3,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+];
 
 const watchedMovies = [
-  { id: 7, title: "The Godfather", rating: 4.9, image: "/placeholder.svg?height=300&width=200" },
-  { id: 8, title: "The Shawshank Redemption", rating: 4.9, image: "/placeholder.svg?height=300&width=200" },
-  { id: 9, title: "The Dark Knight", rating: 4.8, image: "/placeholder.svg?height=300&width=200" },
-  { id: 10, title: "Pulp Fiction", rating: 4.8, image: "/placeholder.svg?height=300&width=200" },
-  { id: 11, title: "Fight Club", rating: 4.7, image: "/placeholder.svg?height=300&width=200" },
-  { id: 12, title: "Inception", rating: 4.7, image: "/placeholder.svg?height=300&width=200" },
-]
+  {
+    id: 7,
+    title: "The Godfather",
+    rating: 4.9,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 8,
+    title: "The Shawshank Redemption",
+    rating: 4.9,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 9,
+    title: "The Dark Knight",
+    rating: 4.8,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 10,
+    title: "Pulp Fiction",
+    rating: 4.8,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 11,
+    title: "Fight Club",
+    rating: 4.7,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+  {
+    id: 12,
+    title: "Inception",
+    rating: 4.7,
+    image: "/placeholder.svg?height=300&width=200",
+  },
+];
 
 const reviewedMovies = [
   {
@@ -45,28 +116,48 @@ const reviewedMovies = [
     review: "Visualmente impresionante y con una narrativa única.",
     image: "/placeholder.svg?height=300&width=200",
   },
-]
+];
 
 export function ProfileTabs() {
-  const [activeTab, setActiveTab] = useState("favorites")  // favourites | vistas | resenias
+  const [activeTab, setActiveTab] = useState("favorites"); // favourites | vistas | resenias
 
   return (
     <div className="space-y-4">
+      <div className="flex gap-6 pt-2">
+        <div className="text-center">
+          <p className="text-lg font-bold">{user.stats.reviews}</p>
+          <p className="text-xs text-muted-foreground">Reseñas</p>
+        </div>
+        <div className="text-center">
+          <p className="text-lg font-bold">{user.stats.favorites}</p>
+          <p className="text-xs text-muted-foreground">Favoritos</p>
+        </div>
+        <div className="text-center">
+          <p className="text-lg font-bold">{user.stats.watched}</p>
+          <p className="text-xs text-muted-foreground">Vistas</p>
+        </div>
+      </div>
       <div className="flex border-gray-700 border-b">
         <button
-          className={` cursor-pointer px-4 py-2 text-sm font-medium transition-all ${activeTab === "favorites" ? "active-tab" : "text-muted-foreground"}`}
+          className={` cursor-pointer px-4 py-2 text-sm font-medium transition-all ${
+            activeTab === "favorites" ? "active-tab" : "text-muted-foreground"
+          }`}
           onClick={() => setActiveTab("favorites")}
         >
           Favoritos
         </button>
         <button
-          className={` cursor-pointer px-4 py-2 text-sm font-medium transition-all ${activeTab === "watched" ? "active-tab" : "text-muted-foreground"}`}
+          className={` cursor-pointer px-4 py-2 text-sm font-medium transition-all ${
+            activeTab === "watched" ? "active-tab" : "text-muted-foreground"
+          }`}
           onClick={() => setActiveTab("watched")}
         >
           Vistas
         </button>
         <button
-          className={` cursor-pointer px-4 py-2 text-sm font-medium transition-all ${activeTab === "reviews" ? "active-tab" : "text-muted-foreground"}`}
+          className={` cursor-pointer px-4 py-2 text-sm font-medium transition-all ${
+            activeTab === "reviews" ? "active-tab" : "text-muted-foreground"
+          }`}
           onClick={() => setActiveTab("reviews")}
         >
           Reseñas
@@ -79,13 +170,20 @@ export function ProfileTabs() {
             <Link key={movie.id} href={`/movies/${movie.id}`}>
               <div className="relative group card-hover">
                 <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg">
-                  <Image src={movie.image || "/placeholder.svg"} alt={movie.title} fill className="object-cover" />
+                  <Image
+                    src={movie.image || "/placeholder.svg"}
+                    alt={movie.title}
+                    fill
+                    className="object-cover"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute top-2 right-2">
                     <Heart className="w-5 h-5 text-primary" fill="red" />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <h3 className="text-sm font-medium text-white line-clamp-2">{movie.title}</h3>
+                    <h3 className="text-sm font-medium text-white line-clamp-2">
+                      {movie.title}
+                    </h3>
                     <div className="flex items-center mt-1">
                       <Star className="w-3 h-3 mr-1 text-primary" fill="red" />
                       <span className="text-xs text-white">{movie.rating}</span>
@@ -104,13 +202,20 @@ export function ProfileTabs() {
             <Link key={movie.id} href={`/movies/${movie.id}`}>
               <div className="relative group card-hover">
                 <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg">
-                  <Image src={movie.image || "/placeholder.svg"} alt={movie.title} fill className="object-cover" />
+                  <Image
+                    src={movie.image || "/placeholder.svg"}
+                    alt={movie.title}
+                    fill
+                    className="object-cover"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute top-2 right-2">
                     <Check className="w-5 h-5 text-primary" />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <h3 className="text-sm font-medium text-white line-clamp-2">{movie.title}</h3>
+                    <h3 className="text-sm font-medium text-white line-clamp-2">
+                      {movie.title}
+                    </h3>
                     <div className="flex items-center mt-1">
                       <Star className="w-3 h-3 mr-1 text-primary" fill="red" />
                       <span className="text-xs text-white">{movie.rating}</span>
@@ -143,12 +248,18 @@ export function ProfileTabs() {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-4 h-4 ${i < Math.floor(movie.rating) ? "text-primary" : "text-muted"}`}
+                          className={`w-4 h-4 ${
+                            i < Math.floor(movie.rating)
+                              ? "text-primary"
+                              : "text-muted"
+                          }`}
                           fill={i < Math.floor(movie.rating) ? "red" : "none"}
                         />
                       ))}
                     </div>
-                    <p className="text-sm text-muted-foreground">{movie.review}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {movie.review}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -157,5 +268,5 @@ export function ProfileTabs() {
         </div>
       )}
     </div>
-  )
+  );
 }

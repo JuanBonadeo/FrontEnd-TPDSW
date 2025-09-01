@@ -90,7 +90,7 @@ export function useApi<T>(
         // Success
         setData(json.data);
 
-      } catch (err: any) {
+      } catch (err) {
         if (cancelled) return;
         
         setError(err.message || "Error de red");

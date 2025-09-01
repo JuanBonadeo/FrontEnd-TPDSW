@@ -10,7 +10,7 @@ interface Props {
     actor: Actor;
 }
 
-function formatBirthDate(iso: string) {
+export function formatBirthDate(iso: string) {
     const d = new Date(iso);
     return d.toLocaleDateString("es-AR", {
         day: "2-digit",
@@ -19,7 +19,7 @@ function formatBirthDate(iso: string) {
     });
 }
 
-function calcAge(iso: string) {
+export function calcAge(iso: string) {
     const b = new Date(iso);
     const t = new Date();
     let age = t.getFullYear() - b.getFullYear();
