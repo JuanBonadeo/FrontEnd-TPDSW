@@ -10,7 +10,7 @@ export interface Movie {
   poster_path: string | null;
   backdrop_path: string | null;
   Category?: { id_category: number; name: string };
-  Director?: { first_name: string; last_name: string; profile_path?: string | null };
+  Director?: { id_director: number; first_name: string; last_name: string; profile_path?: string | null };
   Movie_Actor?: { character: string; Actor: { id_actor: number; first_name: string; last_name: string; profile_path?: string | null } }[];
 }
 
@@ -40,6 +40,19 @@ export interface MovieApi {
 
 export interface Actor {
   id_actor: number;
+  first_name: string;
+  last_name: string;
+  birth_date: string;       // ISO
+  tmdb_id: number;
+  profile_path: string | null;
+  biography: string;
+  birth_place: string | null;
+  gender: number | null;
+  created_at: string;
+}
+
+export interface Director {
+  id_director: number;
   first_name: string;
   last_name: string;
   birth_date: string;       // ISO
@@ -106,3 +119,20 @@ interface UseAuthResult {
   login: (data: LoginData) => Promise<void>;
   logout: () => void;
 }
+
+
+export type MovieLite = {
+  id_movie: number;
+  title: string;
+  poster_path?: string | null;
+  release_date: number;
+  averageScore?: number | null;
+  rating?: number | null;
+};
+
+export type Favourite = {
+  id_user: string;
+  id_movie: number;
+  created_at: string; // ISO
+  Movie: MovieLite;
+};

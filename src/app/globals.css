@@ -23,13 +23,13 @@
     --radius: 0.5rem;
 }
 
-@theme inline {
+/* @theme inline {
   --primary: var(--primary);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
+} */
 
 @media (prefers-color-scheme: dark) {
   :root {

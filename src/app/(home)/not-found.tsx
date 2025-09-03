@@ -24,7 +24,7 @@ export default function NotFoundPage() {
         </h2>
         
         <p className="text-xl text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
-          The movie, actor, or page you're looking for seems to have vanished into the void. 
+          The movie, actor, or page you are looking for seems to have vanished into the void. 
           Maybe it was never meant to be found.
         </p>
         
