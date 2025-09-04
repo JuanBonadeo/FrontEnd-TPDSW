@@ -4,14 +4,15 @@ import { Star, Heart, Check, Clock, Calendar, Hand } from "lucide-react"
 import { getImageUrl } from "@/utils/getImageUrl"
 import Link from "next/link"
 import { Movie } from "@/lib/types.js"
-//import { FavouriteButton } from "../FavouriteButton/FavouriteButton"
+import { FavouriteButton } from '../FavouriteButton/FavouriteButton';
+import { useAuthContext } from "@/context/AuthContext"
 
 interface Props {
   movie: Movie
 }
 
-export function MovieDetail( {movie} : Props) {
-  
+export function MovieDetail({ movie }: Props) {
+  const { user } = useAuthContext();
   return (
     <div className="space-y-6">
       {/* Imagen de fondo */}
@@ -59,7 +60,10 @@ export function MovieDetail( {movie} : Props) {
 
         {/* Botones favoritos/vista */}
         <div className="flex space-x-3 w-full justify-center">
-          {/* <FavouriteButton idMovie={movie.id_movie}  />  ACAAAA*/}
+
+          <FavouriteButton idMovie={movie.id_movie} />
+
+
           <div className="flex items-center justify-center bg-stone-900 rounded-md py-2 w-xl hover:bg-stone-800 transition-colors cursor-pointer">
             <Check className="w-4 h-4 mr-2" />
             Vista
@@ -67,7 +71,7 @@ export function MovieDetail( {movie} : Props) {
           {/* Nuevo botón reseñar */}
           <div className="flex items-center justify-center bg-blue-600 rounded-md py-2 w-xl hover:bg-blue-700 transition-colors cursor-pointer">
             <Hand className="w-4 h-4 mr-2" />
-             Reseñar
+            Reseñar
           </div>
         </div>
 

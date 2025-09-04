@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:3001/api/:path*", // backend
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`, // backend
       },
     ];
   },

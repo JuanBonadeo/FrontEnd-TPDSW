@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { notFound } from "next/navigation";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useRouter, notFound } from "next/navigation";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -10,7 +9,9 @@ interface UseApiOptions<T> {
   enabled?: boolean;
   handleNotFound?: boolean;
   handleUnauthorized?: boolean;
-  requireAuth?: boolean; // Nueva opción para endpoints que requieren autenticación
+  requireAuth?: boolean;
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  body?: any;
   onError?: (message: string, code?: string) => void;
 }
 
@@ -19,6 +20,8 @@ interface UseApiResult<T> {
   loading: boolean;
   error: string | null;
   errorCode: string | null;
+  /** Solo disponible si method !== "GET". Para GET será null. */
+  execute: (() => Promise<void>) | null;
 }
 
 export function useApi<T>(
@@ -30,7 +33,9 @@ export function useApi<T>(
     handleNotFound = true,
     handleUnauthorized = true,
     requireAuth = false,
-    onError
+    method = "GET",
+    body,
+    onError,
   } = options;
 
   const [data, setData] = useState<T | null>(null);
@@ -39,22 +44,17 @@ export function useApi<T>(
   const [errorCode, setErrorCode] = useState<string | null>(null);
 
   const router = useRouter();
+  const cancelledRef = useRef(false);
 
-  // Función para obtener el token del localStorage
-  const getAuthToken = (): string | null => {
-    
-      const token = localStorage.getItem('token');
-      return token;
-    
-  };
+  const getAuthToken = (): string | null => localStorage.getItem("token");
 
-  useEffect(() => {
-    if (!endpoint || !enabled) {
+  const doFetch = useCallback(async () => {
+    if (!endpoint) {
       setLoading(false);
       return;
     }
 
-    // Si requiere autenticación pero no hay token, no hacer la petición
+    // Auth requerido sin token
     if (requireAuth && !getAuthToken()) {
       setError("Token de autenticación requerido");
       setErrorCode("NO_TOKEN");
@@ -62,91 +62,101 @@ export function useApi<T>(
       return;
     }
 
-    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    setErrorCode(null);
 
-    const fetchData = async () => {
-      if (cancelled) return;
-      
-      setLoading(true);
-      setError(null);
-      setErrorCode(null);
+    try {
+      const url = endpoint.startsWith("http") ? endpoint : `${API_BASE}${endpoint}`;
 
-      try {
-        const url = endpoint.startsWith("http") ? endpoint : `${API_BASE}${endpoint}`;
-        
-        // Preparar headers
-        const headers: Record<string, string> = {
-          "Accept": "application/json"
-        };
+      const headers: Record<string, string> = { Accept: "application/json" };
 
-        // Agregar token si está disponible y se requiere autenticación
-        const token = getAuthToken();
-        if (requireAuth && token) {
-          headers["Authorization"] = `Bearer ${token}`;
-        }
-        
-        const res = await fetch(url, { headers });
+      const token = getAuthToken();
+      if (requireAuth && token) headers["Authorization"] = `Bearer ${token}`;
+      if (method !== "GET") headers["Content-Type"] = "application/json";
 
-        if (cancelled) return;
+      const res = await fetch(url, {
+        method,
+        headers,
+        body: method !== "GET" && body ? JSON.stringify(body) : undefined,
+      });
 
-        const json = await res.json();
+      if (cancelledRef.current) return;
 
-        // Error HTTP o API error
-        if (!res.ok || !json.success) {
-          const code = json.code || `HTTP_${res.status}`;
-          const message = json.message || json.error || `Error ${res.status}`;
+      const json = await res.json();
 
-          setError(message);
-          setErrorCode(code);
-          onError?.(message, code);
+      if (!res.ok || !json.success) {
+        const code = json.code || `HTTP_${res.status}`;
+        const message = json.message || json.error || `Error ${res.status}`;
 
-          // Redirecciones simples
-          if (code === "NOT_FOUND" && handleNotFound) {
-            setTimeout(() => notFound(), 10);
-            return;
-          }
-          if (code === "UNAUTHORIZED" && handleUnauthorized) {
-            setTimeout(() => router.push("auth/login"), 10);
-            return;
-          }
+        setError(message);
+        setErrorCode(code);
+        onError?.(message, code);
 
+        if (code === "NOT_FOUND" && handleNotFound) {
+          setTimeout(() => notFound(), 10);
           return;
         }
-
-        // Success
-        setData(json.data);
-
-      } catch (err: unknown) {
-        if (cancelled) return;
-
-        let errorMessage = "Error de red";
-        if (err instanceof Error) {
-          errorMessage = err.message;
+        if (code === "UNAUTHORIZED" && handleUnauthorized) {
+          setTimeout(() => router.push("/auth/login"), 10);
+          return;
         }
-        setError(errorMessage);
-        setErrorCode("FETCH_ERROR");
-        onError?.(errorMessage, "FETCH_ERROR");
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        return;
       }
-    };
 
-    fetchData();
+      setData(json.data);
+    } catch (err: unknown) {
+      if (cancelledRef.current) return;
+      const errorMessage = err instanceof Error ? err.message : "Error de red";
+      setError(errorMessage);
+      setErrorCode("FETCH_ERROR");
+      onError?.(errorMessage, "FETCH_ERROR");
+    } finally {
+      if (!cancelledRef.current) setLoading(false);
+    }
+  // deps:
+  }, [
+    endpoint,
+    requireAuth,
+    method,
+    body,
+    handleNotFound,
+    handleUnauthorized,
+    onError,
+    router,
+  ]);
+
+  // Auto-fetch SOLO para GET
+  useEffect(() => {
+    cancelledRef.current = false;
+
+    if (!endpoint || !enabled) {
+      setLoading(false);
+      return;
+    }
+
+    if (method === "GET") {
+      void doFetch();
+    } else {
+      // Métodos no-GET no se disparan automáticamente
+      setLoading(false);
+    }
 
     return () => {
-      cancelled = true;
+      cancelledRef.current = true;
     };
-  }, [endpoint, enabled, handleNotFound, handleUnauthorized, requireAuth, onError, router]);
+  }, [endpoint, enabled, method, doFetch]);
 
   return {
     data,
     loading,
     error,
     errorCode,
+    execute: method !== "GET" ? doFetch : null,
   };
 }
+
+
 
 interface UseApiPaginatedResult<T> {
   data: T | null;

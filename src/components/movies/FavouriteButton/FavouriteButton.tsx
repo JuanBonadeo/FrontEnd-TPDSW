@@ -1,52 +1,60 @@
-// components/FavouriteButton.tsx
-// "use client";
+"use client";
 
-// import { useMemo } from "react";
-// import { Heart } from "lucide-react";
-// import { useApi } from "@/hooks/useApi";
-// import type { ApiResponse, Favourite } from "@/lib/types";
-// import clsx from "clsx";
-// import { notFound } from "next/navigation";
+import { Heart } from "lucide-react";
+import { useApi } from "@/hooks/useApi";
+import type { Favourite } from "@/lib/types";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 
-// interface Props {
-//   idMovie: number;
-// }
 
-// export const FavouriteButton = ({ idMovie }: Props) => {
-//   // Tu hook siempre devuelve { success, message, data }
-//   const { data: favourites, error, loading } = useApi<ApiResponse<Favourite[]>>("/favourites");
+interface Props {
+  idMovie: number;
+}
 
-//     if (favourites === null) {
-//     return notFound() // o un spinner, o un mensaje de error, lo que prefieras
-//   }
+export function FavouriteButton({ idMovie }: Props) {
 
-//   // ¿Esta peli está en favoritos?
-//   const isFavourite = useMemo(
-//     () => favourites.some((f) => f.id_movie === idMovie),
-//     [favourites, idMovie]
-//   );
+  const { data: isFavourite, error, loading } = useApi<Boolean>("/favourites/isFavourite/" + idMovie,
+    { requireAuth: true }
+  )
 
-//   return (
-//     <button
-//       type="button"
-//       disabled={loading}
-//       aria-pressed={isFavourite}
-//       className={clsx(
-//         "flex items-center justify-center rounded-md py-2 px-3 transition-colors cursor-pointer",
-//         isFavourite ? "bg-red-700" : "bg-red-600 hover:bg-red-700",
-//         loading && "opacity-70 cursor-not-allowed"
-//       )}
-//       // TODO: acá podés hacer el toggle con POST/DELETE cuando tengas esos endpoints
-//       onClick={() => {
-//         if (loading) return;
-//         // implementar toggle cuando tengas /favourites (POST) y /favourites/:id (DELETE)
-//       }}
-//       title={error ? "No se pudieron cargar tus favoritos" : isFavourite ? "Quitar de favoritos" : "Agregar a favoritos"}
-//     >
-//       <Heart
-//         className={clsx("w-4 h-4 mr-2", isFavourite ? "fill-current" : "fill-transparent")}
-//       />
-//       {loading ? "Cargando…" : isFavourite ? "En favoritos" : "Favorito"}
-//     </button>
-//   );
-// };
+  const [isFavouriteState, setIsFavourite] = useState(isFavourite);
+
+
+
+  const { execute, loading: Loading2, error: error2 } = useApi<Favourite>(
+    "/favourites/toggle",
+    { method: "PUT", requireAuth: true, body: { id_movie: idMovie } }
+  );
+
+  const handleToggle = () => {
+    setIsFavourite(!isFavouriteState)
+    execute()
+  }
+
+  if (error) return <div>Error loading favourite status: {error}</div>;
+  if (loading) return <div>Loading favourite status...</div>;
+  if (!isFavourite) return <div>No favourite data found</div>;
+
+  return (
+
+    <button
+      type="button"
+      disabled={loading}
+
+      className={clsx(
+        "flex items-center justify-center rounded-md py-2 w-xl transition-colors cursor-pointer",
+        "bg-red-600 hover:bg-red-700",
+        loading && "opacity-70 cursor-not-allowed"
+      )}
+      // TODO: acá podés hacer el toggle con POST/DELETE cuando tengas esos endpoints
+      onClick={() => { handleToggle() }}
+      title={error ? "No se pudieron cargar tus favoritos" : isFavouriteState ? "Quitar de favoritos" : "Agregar a favoritos"}
+    >
+      <Heart
+        className={"w-4 h-4 mr-2"}
+        fill={isFavouriteState ? "white" : "transparent"}
+      />
+      {loading ? "Cargando…" : isFavouriteState ? "En favoritos" : "Agregar a Favoritos"}
+    </button>
+  );
+};

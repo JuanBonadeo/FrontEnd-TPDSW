@@ -55,15 +55,15 @@ export interface Director {
   id_director: number;
   first_name: string;
   last_name: string;
-  birth_date: string;       // ISO
+  nationality: string;
   tmdb_id: number;
-  profile_path: string | null;
+  profile_path: string;
   biography: string;
-  birth_place: string | null;
-  gender: number | null;
-  created_at: string;
+  birth_date: string; // ISO string (ej: "1970-06-07T00:00:00.000Z")
+  birth_place: string;
+  created_at: string; // ISO string
+  Movie?: Movie[];
 }
-
 export interface ReviewUser {
   id: string;
   name: string | null;
