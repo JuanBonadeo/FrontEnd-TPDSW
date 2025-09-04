@@ -10,7 +10,8 @@ export const ProfileStatsClient = () => {
   const { data: userStats, loading, error, errorCode } = useApi<UserStats>(endpoint, {
     requireAuth: true,
   });
-  if (loading) return <ProfileTabsSkeleton />;
+  
+  if (loading ) return <ProfileTabsSkeleton />;
   if (error) return <p>Error: {error} (code: {errorCode})</p>;
   if (!userStats) return <p>No user data</p>;
   

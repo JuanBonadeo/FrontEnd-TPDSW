@@ -14,7 +14,7 @@ export function ReviewSection({ reviews }: { reviews: Review[] }) {
             <Title title="Reviews"  size="2xl"/>
             <div className="space-y-3">
                 {reviews.map((review) => (
-                    <ReviewCard key={review.id_review} review={review} />
+                    <ReviewCard key={review.comment} review={review} />
                 ))}
             </div>
         </div>

@@ -28,7 +28,7 @@ export const ReviewCard = ({ review }: Props) => {
                             <Star
                                 key={i}
                                 className={`w-4 h-4 ${i < Math.floor(review.score) ? "text-primary" : "text-muted"}`}
-                                fill={i < Math.floor(review.score) ? "red" : "none"}
+                                fill={i < Math.floor(3.5) ? "red" : "none"}
                             />
                         ))}
                         <span className="ml-2 text-sm">{review.score}</span>

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Movie } from "@/lib/types.js"
 import { FavouriteButton } from '../FavouriteButton/FavouriteButton';
 import { useAuthContext } from "@/context/AuthContext"
+import ReviewModal from "@/components/reviews/ReviewModal"
 
 interface Props {
   movie: Movie
@@ -69,10 +70,7 @@ export function MovieDetail({ movie }: Props) {
             Vista
           </div>
           {/* Nuevo botón reseñar */}
-          <div className="flex items-center justify-center bg-blue-600 rounded-md py-2 w-xl hover:bg-blue-700 transition-colors cursor-pointer">
-            <Hand className="w-4 h-4 mr-2" />
-            Reseñar
-          </div>
+          <ReviewModal idMovie={movie.id_movie.toString()}/>
         </div>
 
 
