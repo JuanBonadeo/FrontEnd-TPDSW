@@ -1,13 +1,14 @@
 import { DirectorDetailClient } from "./DirectorDetailClient";
+import { DirectorTopMoviesClient } from "./DirectorTopMoviesClient";
 
 type PageProps = { params: { id: string}};
 
 export default async function DirectorPage({ params }: PageProps) {
-    const { id } = params;
-
+    const { id } = await params;
     return (
         <>
             <DirectorDetailClient id={id} />
+            <DirectorTopMoviesClient id={id} />
         </>
     );
 }

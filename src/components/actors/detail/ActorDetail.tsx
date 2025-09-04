@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { Calendar, MapPin, Share2 } from "lucide-react";
-import { getImageUrl } from "@/utils/getImageUrl";
 import { Actor } from "@/lib/types";
+import { getImageUrl } from "@/utils/getImageUrl";
+import { Calendar, MapPin, Share2 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 interface Props {
     actor: Actor;
@@ -52,14 +52,14 @@ export function ActorDetail({ actor }: Props) {
                         <div>
                             <h1 className="text-2xl font-bold">{fullName}</h1>
 
-                            <div className="flex flex-col items-center justify-center text-muted-foreground">
-                                <div className="flex items-center ml-1">
+                            <div className="flex flex-col items-start text-muted-foreground">
+                                <div className="flex items-center">
                                     <Calendar className="mr-1 h-4 w-4" />
                                     <span>{birthLabel}, {age} años</span>
                                 </div>
 
 
-                                <div className="flex items-center">
+                                <div className="flex items-center ">
                                     <MapPin className="mr-1 h-4 w-4" />
                                     <span>{actor.birth_place}</span>
                                 </div>
@@ -68,18 +68,13 @@ export function ActorDetail({ actor }: Props) {
                         </div>
                     </div>
 
-
-
                     <Link
                         href={`https://www.themoviedb.org/person/${actor.tmdb_id}`}
                         target="_blank"
-                        className="flex items-center justify-center rounded-md bg-red-600 py-2 px-3 transition-colors hover:bg-red-700"
-                    >
+                        className="flex items-center justify-center rounded-md bg-red-600 py-2 px-3 transition-colors hover:bg-red-700">
                         <Share2 className="mr-2 h-4 w-4" />
                         TMDB
                     </Link>
-
-
 
 
                 </div>

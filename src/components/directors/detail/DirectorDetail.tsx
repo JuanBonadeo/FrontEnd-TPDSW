@@ -1,6 +1,10 @@
 "use client"
 
 import { Director } from "@/lib/types";
+import { getImageUrl } from "@/utils/getImageUrl";
+import { Calendar, MapPin, Share2 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 interface Props {
   director: Director;
@@ -30,10 +34,58 @@ export function DirectorDetail({ director }:Props) {
     const age = calcAge(director.birth_date);
 
     return (
-        <div>
-            <h1>{fullName}</h1>
-            <p>Fecha de nacimiento: {birthLabel}</p>
-            <p>Edad: {age} años</p>
+        <div className=" max-w-3xl mx-auto px-4 py-8 ">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div className="rounded-xl relative h-[380px] w-full max-w-[280px] mx-auto overflow-hidden shadow-lg">
+                    <Image
+                        src={getImageUrl(director.profile_path, "w780")}
+                        alt={fullName}
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                </div>
+
+                <div className="space-y-4 my-auto">
+                    {/* Título + meta (a la manera de MovieDetail) */}
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold">{fullName}</h1>
+
+                            <div className="flex flex-col items-start text-muted-foreground">
+                                <div className="flex items-center" >
+                                    <Calendar className="mr-1 h-4 w-4" />
+                                    <span>{birthLabel}, {age} años</span>
+                                </div>
+
+
+                                <div className="flex items-center">
+                                    <MapPin className="mr-1 h-4 w-4" />
+                                    <span>{director.birth_place}</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <Link
+                        href={`https://www.themoviedb.org/person/${director.tmdb_id}`}
+                        target="_blank"
+                        className="flex items-center justify-center rounded-md bg-red-600 py-2 px-3 transition-colors hover:bg-red-700">
+                        <Share2 className="mr-2 h-4 w-4" />
+                        TMDB
+                    </Link>
+
+
+                </div>
+            </div>
+            {/* Biografía */}
+            <div className="mt-10">
+                <h2 className="mb-2 text-lg font-semibold">Biografía</h2>
+                <p className="text-sm text-muted-foreground whitespace-pre-line">
+                    {director.biography || "Sin biografía."}
+                </p>
+            </div>
         </div>
     );
 }
