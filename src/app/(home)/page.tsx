@@ -1,6 +1,5 @@
 // app/movies/page.tsx
 import Carrusel from "@/components/ui/Carrusel/Carrusel";
-import { metadata } from "./layout.jsx";
 import MoviesClient from "./MoviesClient";
 
 

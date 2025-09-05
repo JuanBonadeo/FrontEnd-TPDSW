@@ -7,17 +7,16 @@ interface SearchParams {
   categoryId?: string;
   page?: string;
   limit?: string;
-  q?: string; // término de búsqueda
+  title?: string;
 }
-
 interface Props {
   searchParams: SearchParams;
 }
 
 export default async function SearchPage({ searchParams }: Props) {
-  const { page, limit, categoryId, q } = await searchParams;
-  const pageInt = parseInt(page || "1", 10);
-  const limitInt = parseInt(limit || "30", 10);
+  const { page, limit, categoryId, title } = await searchParams;
+  const pageInt = Number.isFinite(Number(page)) ? parseInt(page as string, 10) : 1;
+  const limitInt = Number.isFinite(Number(limit)) ? parseInt(limit as string, 10) : 30;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -34,7 +33,7 @@ export default async function SearchPage({ searchParams }: Props) {
             categoryId={categoryId}
             page={pageInt}
             limit={limitInt}
-            searchTerm={q}
+            searchTerm={title}
           />
         </Suspense>
       </div>

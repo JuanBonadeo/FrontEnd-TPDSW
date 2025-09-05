@@ -145,3 +145,4 @@ export type Category = {
   tmdb_id: number;
   created_at: string; // ISO
 }
+

@@ -9,12 +9,14 @@ import { Movie } from "@/lib/types";
 import { notFound } from "next/navigation.js";
 
 
-export default function MoviesClient({ page, limit }: { page: number; limit: number }) {
-  const { data: movies, loading, error, errorCode, totalPages } = useApiPaginated<Movie[]>("/movies", page, limit);
+
+export default function MoviesClient({ page, limit = 30  }: { page: number; limit: number }) {
+  const { data: movies, loading, error, errorCode, totalPages } = useApiPaginated<Movie[]>("/movies/search", page, limit);
   if(errorCode === "NOT_FOUND") return notFound();
   if (loading) return <MoviesGridSkeleton />;
   if (error) return <p>Error: {error}</p>;
-  if (!movies && !loading) return <p>No movies found.</p>;
+  if (!movies ) return <p>No movies found.</p>;
+  
 
   return (    
     <>

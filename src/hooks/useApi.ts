@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter, notFound } from "next/navigation";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 interface UseApiOptions<T> {
   enabled?: boolean;
@@ -166,14 +166,12 @@ export function useApi<T>(
 
 interface UseApiPaginatedResult<T> {
   data: T | null;
+  totalPages: number;
   loading: boolean;
   error: string | null;
   errorCode: string | null;
-  totalPages: number;
   currentPage: number;
-  pageSize: number;
   execute: () => Promise<void>;
-  reset: () => void;
 }
 
 export function useApiPaginated<T>(
@@ -182,46 +180,38 @@ export function useApiPaginated<T>(
   pageSize = 30,
   options: UseApiOptions<T> = {}
 ): UseApiPaginatedResult<T> {
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
 
-  const paginatedEndpoint = endpoint 
-    ? `${endpoint}?page=${page}&limit=${pageSize}` 
-    : null;
+  // 🔧 CORREGIDO: Mejor construcción del endpoint con parámetros
+  const paginatedEndpoint = useMemo(() => {
+    if (!endpoint) return null;
+    
+    // Si endpoint ya tiene parámetros (empieza con ?), usar &
+    // Si no tiene parámetros, usar ?
+    const separator = endpoint.includes('?') ? '&' : '?';
+    return `${endpoint}${separator}page=${page}&limit=${pageSize}`;
+  }, [endpoint, page, pageSize]);
 
   const { data, loading, error, errorCode, execute, reset } = useApi<T>(paginatedEndpoint, options);
 
   useEffect(() => {
     if (data && !loading && !error) {
-      type PaginatedResponse = {
-        pagination?: { totalPages?: number };
-        totalPages?: number;
-        meta?: { totalPages?: number };
-      };
-      const response = data as PaginatedResponse;
-      const tp = response?.pagination?.totalPages || 
-                 response?.totalPages || 
-                 response?.meta?.totalPages ||
-                 0;
-      setTotalPages(tp);
+      ;
+      setTotalPages(data.len);
+
     } else {
-      setTotalPages(0);
     }
   }, [data, loading, error]);
 
-  const resetPaginated = useCallback(() => {
-    reset();
-    setTotalPages(0);
-  }, [reset]);
+  
 
   return {
     data,
+    totalPages,
     loading,
     error,
     errorCode,
-    totalPages,
     currentPage: page,
-    pageSize,
     execute,
-    reset: resetPaginated,
   };
 }
