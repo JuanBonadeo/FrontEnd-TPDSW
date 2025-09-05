@@ -1,10 +1,11 @@
 import { Title } from '../../../components/ui/title/Title';
+import { FavouritesClient } from './FavouritesClient';
 
-export default function FavouritesPage() {
+export default async function FavouritesPage() {
   return (
-    <div className='mt-10'>
-      <Title title='Favourites Page' size='2xl'/>
-      
+    <div className='p-4'>
+      <Title title='Favoritas' size='2xl'/>
+      <FavouritesClient />
     </div>
   );
 }

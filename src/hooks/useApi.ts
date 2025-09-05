@@ -13,6 +13,7 @@ interface UseApiOptions<T> {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: any;
   onError?: (message: string, code?: string) => void;
+  manual?: boolean; // Nueva opción para control manual
 }
 
 interface UseApiResult<T> {
@@ -20,8 +21,8 @@ interface UseApiResult<T> {
   loading: boolean;
   error: string | null;
   errorCode: string | null;
-  /** Solo disponible si method !== "GET". Para GET será null. */
-  execute: (() => Promise<void>) | null;
+  execute: () => Promise<void>;
+  reset: () => void; // Nueva función para resetear estado
 }
 
 export function useApi<T>(
@@ -36,6 +37,7 @@ export function useApi<T>(
     method = "GET",
     body,
     onError,
+    manual = false, // Por defecto no es manual
   } = options;
 
   const [data, setData] = useState<T | null>(null);
@@ -47,6 +49,13 @@ export function useApi<T>(
   const cancelledRef = useRef(false);
 
   const getAuthToken = (): string | null => localStorage.getItem("token");
+
+  const reset = useCallback(() => {
+    setData(null);
+    setError(null);
+    setErrorCode(null);
+    setLoading(false);
+  }, []);
 
   const doFetch = useCallback(async () => {
     if (!endpoint) {
@@ -114,7 +123,6 @@ export function useApi<T>(
     } finally {
       if (!cancelledRef.current) setLoading(false);
     }
-  // deps:
   }, [
     endpoint,
     requireAuth,
@@ -126,11 +134,11 @@ export function useApi<T>(
     router,
   ]);
 
-  // Auto-fetch SOLO para GET
+  // Auto-fetch para GET no manuales
   useEffect(() => {
     cancelledRef.current = false;
 
-    if (!endpoint || !enabled) {
+    if (!endpoint || !enabled || manual) {
       setLoading(false);
       return;
     }
@@ -138,25 +146,23 @@ export function useApi<T>(
     if (method === "GET") {
       void doFetch();
     } else {
-      // Métodos no-GET no se disparan automáticamente
       setLoading(false);
     }
 
     return () => {
       cancelledRef.current = true;
     };
-  }, [endpoint, enabled, method, doFetch]);
+  }, [endpoint, enabled, method, manual, doFetch]);
 
   return {
     data,
     loading,
     error,
     errorCode,
-    execute: method !== "GET" ? doFetch : null,
+    execute: doFetch,
+    reset,
   };
 }
-
-
 
 interface UseApiPaginatedResult<T> {
   data: T | null;
@@ -166,6 +172,8 @@ interface UseApiPaginatedResult<T> {
   totalPages: number;
   currentPage: number;
   pageSize: number;
+  execute: () => Promise<void>;
+  reset: () => void;
 }
 
 export function useApiPaginated<T>(
@@ -180,7 +188,7 @@ export function useApiPaginated<T>(
     ? `${endpoint}?page=${page}&limit=${pageSize}` 
     : null;
 
-  const { data, loading, error, errorCode } = useApi<T>(paginatedEndpoint, options);
+  const { data, loading, error, errorCode, execute, reset } = useApi<T>(paginatedEndpoint, options);
 
   useEffect(() => {
     if (data && !loading && !error) {
@@ -200,6 +208,11 @@ export function useApiPaginated<T>(
     }
   }, [data, loading, error]);
 
+  const resetPaginated = useCallback(() => {
+    reset();
+    setTotalPages(0);
+  }, [reset]);
+
   return {
     data,
     loading,
@@ -208,5 +221,7 @@ export function useApiPaginated<T>(
     totalPages,
     currentPage: page,
     pageSize,
+    execute,
+    reset: resetPaginated,
   };
 }

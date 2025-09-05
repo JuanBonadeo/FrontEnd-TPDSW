@@ -32,7 +32,7 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
       score,
       comment: content.trim(),
     }),
-    [idMovie, score, title, content]
+    [idMovie, score, content]
   );
 
   const {
@@ -90,8 +90,8 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     !loading &&
     score >= 1 &&
     score <= 5 &&
-    content.trim().length >= 10; // mínimo 10 chars
-    content.trim().length <= 2000; // máximo 1000 chars
+    content.trim().length >= 10 && // mínimo 10 chars
+    content.trim().length <= 2000; // máximo 2000 chars
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

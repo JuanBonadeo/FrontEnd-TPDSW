@@ -136,3 +136,12 @@ export type Favourite = {
   created_at: string; // ISO
   Movie: MovieLite;
 };
+
+
+export type Category = {
+  id_category: number;
+  name: string;
+  description: string;
+  tmdb_id: number;
+  created_at: string; // ISO
+}
