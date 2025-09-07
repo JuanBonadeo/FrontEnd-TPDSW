@@ -11,17 +11,21 @@ import { notFound } from "next/navigation.js";
 
 
 export default function MoviesClient({ page, limit = 30  }: { page: number; limit: number }) {
-  const { data: movies, loading, error, errorCode, totalPages } = useApiPaginated<Movie[]>("/movies/search", page, limit);
-  if(errorCode === "NOT_FOUND") return notFound();
+  const { data: movies, pagination, loading, error } = useApiPaginated<Movie[]>(
+  '/movies/search',
+  page,
+  limit
+);
+  if (error === "NOT_FOUND") return notFound();
   if (loading) return <MoviesGridSkeleton />;
   if (error) return <p>Error: {error}</p>;
-  if (!movies ) return <p>No movies found.</p>;
-  
+  if (!movies) return <p>No movies found.</p>;
+
 
   return (    
     <>
       <MoviesGrid movies={movies} title="Movies" />
-      <Pagination totalPages={totalPages} />
+      <Pagination totalPages={pagination.totalPages} />
     </>
   );
 }

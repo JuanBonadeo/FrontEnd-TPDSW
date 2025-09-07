@@ -13,7 +13,7 @@ interface UseApiOptions<T> {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: any;
   onError?: (message: string, code?: string) => void;
-  manual?: boolean; // Nueva opción para control manual
+  manual?: boolean;
 }
 
 interface UseApiResult<T> {
@@ -22,7 +22,7 @@ interface UseApiResult<T> {
   error: string | null;
   errorCode: string | null;
   execute: () => Promise<void>;
-  reset: () => void; // Nueva función para resetear estado
+  reset: () => void;
 }
 
 export function useApi<T>(
@@ -37,7 +37,7 @@ export function useApi<T>(
     method = "GET",
     body,
     onError,
-    manual = false, // Por defecto no es manual
+    manual = false,
   } = options;
 
   const [data, setData] = useState<T | null>(null);
@@ -63,7 +63,6 @@ export function useApi<T>(
       return;
     }
 
-    // Auth requerido sin token
     if (requireAuth && !getAuthToken()) {
       setError("Token de autenticación requerido");
       setErrorCode("NO_TOKEN");
@@ -134,7 +133,6 @@ export function useApi<T>(
     router,
   ]);
 
-  // Auto-fetch para GET no manuales
   useEffect(() => {
     cancelledRef.current = false;
 
@@ -166,12 +164,18 @@ export function useApi<T>(
 
 interface UseApiPaginatedResult<T> {
   data: T | null;
-  totalPages: number;
+  pagination: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  } | null;
   loading: boolean;
   error: string | null;
   errorCode: string | null;
   currentPage: number;
   execute: () => Promise<void>;
+  reset: () => void;
 }
 
 export function useApiPaginated<T>(
@@ -180,38 +184,154 @@ export function useApiPaginated<T>(
   pageSize = 30,
   options: UseApiOptions<T> = {}
 ): UseApiPaginatedResult<T> {
-  const [totalPages, setTotalPages] = useState<number | null>(null);
+  const {
+    enabled = true,
+    handleNotFound = true,
+    handleUnauthorized = true,
+    requireAuth = false,
+    method = "GET",
+    body,
+    onError,
+    manual = false,
+  } = options;
 
-  // 🔧 CORREGIDO: Mejor construcción del endpoint con parámetros
+  const [data, setData] = useState<T | null>(null);
+  const [pagination, setPagination] = useState<{
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
+
+  const router = useRouter();
+  const cancelledRef = useRef(false);
+
+  const getAuthToken = (): string | null => localStorage.getItem("token");
+
+  const reset = useCallback(() => {
+    setData(null);
+    setPagination(null);
+    setError(null);
+    setErrorCode(null);
+    setLoading(false);
+  }, []);
+
+  // Construcción del endpoint con parámetros de paginación
   const paginatedEndpoint = useMemo(() => {
     if (!endpoint) return null;
     
-    // Si endpoint ya tiene parámetros (empieza con ?), usar &
-    // Si no tiene parámetros, usar ?
     const separator = endpoint.includes('?') ? '&' : '?';
     return `${endpoint}${separator}page=${page}&limit=${pageSize}`;
   }, [endpoint, page, pageSize]);
 
-  const { data, loading, error, errorCode, execute, reset } = useApi<T>(paginatedEndpoint, options);
+  const doFetch = useCallback(async () => {
+    if (!paginatedEndpoint) {
+      setLoading(false);
+      return;
+    }
+
+    if (requireAuth && !getAuthToken()) {
+      setError("Token de autenticación requerido");
+      setErrorCode("NO_TOKEN");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setErrorCode(null);
+
+    try {
+      const url = paginatedEndpoint.startsWith("http") ? paginatedEndpoint : `${API_BASE}${paginatedEndpoint}`;
+
+      const headers: Record<string, string> = { Accept: "application/json" };
+
+      const token = getAuthToken();
+      if (requireAuth && token) headers["Authorization"] = `Bearer ${token}`;
+      if (method !== "GET") headers["Content-Type"] = "application/json";
+
+      const res = await fetch(url, {
+        method,
+        headers,
+        body: method !== "GET" && body ? JSON.stringify(body) : undefined,
+      });
+
+      if (cancelledRef.current) return;
+
+      const json = await res.json();
+
+      if (!res.ok || !json.success) {
+        const code = json.code || `HTTP_${res.status}`;
+        const message = json.message || json.error || `Error ${res.status}`;
+
+        setError(message);
+        setErrorCode(code);
+        onError?.(message, code);
+
+        if (code === "NOT_FOUND" && handleNotFound) {
+          setTimeout(() => notFound(), 10);
+          return;
+        }
+        if (code === "UNAUTHORIZED" && handleUnauthorized) {
+          setTimeout(() => router.push("/auth/login"), 10);
+          return;
+        }
+        return;
+      }
+
+      // Extraer data y pagination de la respuesta
+      setData(json.data);
+      setPagination(json.pagination);
+    } catch (err: unknown) {
+      if (cancelledRef.current) return;
+      const errorMessage = err instanceof Error ? err.message : "Error de red";
+      setError(errorMessage);
+      setErrorCode("FETCH_ERROR");
+      onError?.(errorMessage, "FETCH_ERROR");
+    } finally {
+      if (!cancelledRef.current) setLoading(false);
+    }
+  }, [
+    paginatedEndpoint,
+    requireAuth,
+    method,
+    body,
+    handleNotFound,
+    handleUnauthorized,
+    onError,
+    router,
+  ]);
 
   useEffect(() => {
-    if (data && !loading && !error) {
-      ;
-      setTotalPages(data.len);
+    cancelledRef.current = false;
 
-    } else {
+    if (!paginatedEndpoint || !enabled || manual) {
+      setLoading(false);
+      return;
     }
-  }, [data, loading, error]);
 
-  
+    if (method === "GET") {
+      void doFetch();
+    } else {
+      setLoading(false);
+    }
+
+    return () => {
+      cancelledRef.current = true;
+    };
+  }, [paginatedEndpoint, enabled, method, manual, doFetch]);
 
   return {
     data,
-    totalPages,
+    pagination,
     loading,
     error,
     errorCode,
     currentPage: page,
-    execute,
+    execute: doFetch,
+    reset,
   };
 }
