@@ -30,7 +30,7 @@ export const SearchInput = () => {
       value={title}
       onChange={handleChange}
       placeholder="Buscar por título..."
-      className="w-full rounded-md border border-input bg-transparent px-3 py-2 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      className="w-md rounded-md border border-input bg-transparent px-3 py-1 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     />
   );
 };

@@ -60,6 +60,7 @@ body {
   background: var(--color-stone-950);
   color: var(--color-foreground);
   font-family: Arial, Helvetica, sans-serif;
+  cursor: default;
 }
 
 .text-primary {

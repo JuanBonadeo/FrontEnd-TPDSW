@@ -1,5 +1,5 @@
 [x] vista mis Favoritos
-[] vista Busqueda de peliculas
+[x] vista Busqueda de peliculas
 [] Banner Critio 
 [] Arreglar paginacion
 [] Cambiar logica de jwt, para poder ver si un token esta vencido, y revalidarlo.

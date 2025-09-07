@@ -7,6 +7,7 @@ import { MoviesGrid } from "@/components/movies/Grid/MoviesGrid";
 import MoviesGridSkeleton from "@/components/movies/Grid/MoviesGridSkeleton";
 import { CategoriesNav } from "@/components/ui/Search/CategoriesNav";
 import { SearchInput } from "@/components/ui/Search/SearchInput";
+import { Pagination } from "@/components/ui/pagination/Pagintation";
 
 interface Props {
   categoryId?: string;
@@ -16,26 +17,17 @@ interface Props {
 }
 
 export const SearchClient = ({ categoryId, page = 1, limit = 30, searchTerm }: Props) => {
-  // 🔧 CORREGIDO: Ahora construimos correctamente el endpoint como path relativo
+  
   const endpoint = useMemo(() => {
     const params = new URLSearchParams();
     if (categoryId) params.set("categoryId", categoryId);
     if (searchTerm) params.set("title", searchTerm);
-    
-    // 🔧 CORREGIDO: Retornamos la ruta base + parámetros (sin el ?)
+
     const queryString = params.toString();
     return queryString ? `/movies/search?${queryString}` : '/movies/search';
   }, [categoryId, searchTerm]);
 
-  const {
-    data: movies,
-    error,
-    loading,
-    currentPage,
-    pageSize,
-    totalPages,
-    execute,
-  } = useApiPaginated<MovieApi[]>(
+  const { data: movies, error, loading, pagination, execute } = useApiPaginated<MovieApi[]>(
     endpoint,
     page,         
     limit,
@@ -70,11 +62,11 @@ export const SearchClient = ({ categoryId, page = 1, limit = 30, searchTerm }: P
       {!loading && movies && movies.length > 0 && (
         <div className="space-y-4">
           <MoviesGrid movies={movies} title={`Películas encontradas (${movies.length})`} />
-          {totalPages > 1 && (
-            <div className="text-sm text-muted-foreground text-center">
-              Página {currentPage} de {totalPages}
-            </div>
-          )}
+          {
+            pagination && pagination.totalPages > 1 && (
+              <Pagination totalPages={pagination.totalPages} />
+            )
+          }
         </div>
       )}
 
