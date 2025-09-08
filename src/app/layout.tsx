@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
-
+import { Lexend } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+
+
+const lexend = Lexend({
+  variable: "--font-lexend",
+  subsets: ["latin"],
+});
 
 
 
@@ -19,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={` antialiased bg2`}
+        className={`${lexend.variable} antialiased bg2`}
       >  <div className="min-h-screen  text-white p-4">
             <div className="max-w-5xl mx-auto pb-25">
               <AuthProvider>
