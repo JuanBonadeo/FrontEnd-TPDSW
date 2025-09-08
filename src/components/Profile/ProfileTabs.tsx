@@ -140,7 +140,7 @@ export function ProfileTabs({userStats}: Props) {
       {activeTab === "reviews" && (
         <div className="space-y-4">
           {userStats.Review.map((review) => (
-            <Link key={review.id_movie} href={`/movies/${review.id_movie}`}>
+            <Link key={review.id_review} href={`/movies/${review.id_movie}`}>
               <div className="flex gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="relative flex-shrink-0 w-16 h-24">
                   <Image
