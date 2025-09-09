@@ -137,6 +137,12 @@ export type Favourite = {
   Movie: MovieLite;
 };
 
+export type WatchMovie = {
+  id_user: string;
+  id_movie: number;
+  created_at: string; // ISO va?
+  Movie: MovieLite;
+};
 
 export type Category = {
   id_category: number;
