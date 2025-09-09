@@ -18,7 +18,7 @@ interface Props {
     title?: string;
     autoPlayMs?: number;
 }
-export default function Carrusel({ids, title = "Popular Movies", autoPlayMs = 0,}: Props) {
+export default function Carrusel({ids, title = "Peliculas en Tendencia", autoPlayMs = 0,}: Props) {
   const r1 = useApi<Movie>(`/movies/${ids[0]}`);
   const r2 = useApi<Movie>(`/movies/${ids[1]}`);
   const r3 = useApi<Movie>(`/movies/${ids[2]}`);

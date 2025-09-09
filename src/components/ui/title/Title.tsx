@@ -2,7 +2,7 @@ import React from 'react'
 
 interface Props {
     title: string;
-    size?: "sm" | "md" | "lg" | "xl" | "2xl";
+    size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
     align?: "left" | "center" | "right";
     className?: string;
 }

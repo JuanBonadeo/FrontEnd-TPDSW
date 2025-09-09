@@ -24,7 +24,7 @@ export default function MoviesClient({ page, limit = 30  }: { page: number; limi
 
   return (    
     <>
-      <MoviesGrid movies={movies} title="Movies" />
+      <MoviesGrid movies={movies} title="Todas las peliculas" />
       <Pagination totalPages={pagination.totalPages} />
     </>
   );
