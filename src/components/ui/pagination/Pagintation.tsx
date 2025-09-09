@@ -74,8 +74,9 @@ export const Pagination = ({ totalPages }: Props) => {
             )}
 
           {/* Pages */}
-          {allPages.map((page) => {
-            const key = String(page);
+          {allPages.map((page, index) => {
+            // Usar index para hacer keys únicas cuando hay múltiples "..."
+            const key = page === '...' ? `ellipsis-${index}` : String(page);
             const isActive = page === currentPage;
 
             if (page === '...') {
