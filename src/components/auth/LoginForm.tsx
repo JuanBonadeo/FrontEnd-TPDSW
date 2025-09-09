@@ -11,7 +11,7 @@ interface Props {
   onLogin: (data: {
     email: string;
     password: string;
-  }) => Promise<void>;
+  }) => Promise<boolean>;
   loading: boolean;
 }
 

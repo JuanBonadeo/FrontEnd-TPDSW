@@ -6,14 +6,10 @@ import { RegisterForm } from "@/components/auth/RegisterForm";
 
 
 export function RegisterClient() {
-  const { register, loading, error, redirectPath } = useAuth();
+  const { register, loading, error } = useAuth();
  
 
-  useEffect(() => {
-    if (redirectPath) {
-      window.location.href = redirectPath;
-    }
-  }, [redirectPath]);
+  
   
   const handleRegister = async (formData: {
     name: string;
@@ -26,7 +22,7 @@ export function RegisterClient() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg rounded-xl py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h flex items-center justify-center bg rounded-xl py-5 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full ">
         <div>
           <h2 className=" text-center text-3xl font-extrabold ">

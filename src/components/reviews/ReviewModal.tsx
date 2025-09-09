@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Hand, X } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
+import { useAuthContext } from "@/context/AuthContext";
+import Link from "next/link.js";
 
 type ReviewResponse = {
   id_review: number;
@@ -18,6 +20,13 @@ interface ReviewModalProps {
 }
 
 export default function ReviewModal({ idMovie }: ReviewModalProps) {
+  const { isAuthenticated } = useAuthContext();
+  if (!isAuthenticated) return (
+      <Link href="/auth/login" className="flex items-center justify-center bg-blue-600 rounded-md py-2 w-xl hover:bg-blue-700 transition-colors cursor-pointer">
+        <Hand className={"w-4 h-4 mr-2"} />
+        Reseñar
+      </Link>
+  );
   const [open, setOpen] = useState(false);
 
   // Form state

@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { tokenManager } from "@/utils/tokenManager";
+import { useAuthContext } from "@/context/AuthContext"; // Importar el contexto
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 
@@ -37,26 +40,35 @@ interface LoginData {
 interface UseAuthResult {
   loading: boolean;
   error: string | null;
-  redirectPath: string | null; // nuevo estado
-  register: (data: RegisterData) => Promise<void>;
-  login: (data: LoginData) => Promise<void>;
+  register: (data: RegisterData) => Promise<boolean>;
+  login: (data: LoginData) => Promise<boolean>;
   logout: () => void;
 }
 
 export function useAuth(): UseAuthResult {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [redirectPath, setRedirectPath] = useState<string | null>(null);
+  const router = useRouter();
+  const { logout: contextLogout, setAuthData } = useAuthContext(); // Usar funciones del contexto
 
   const saveAuthData = (authData: AuthResponse) => {
-    localStorage.setItem("token", authData.token);
+    // Guardar en localStorage (como antes)
+    tokenManager.storeToken(authData.token);
     localStorage.setItem("user", JSON.stringify(authData.user));
+    
+    // CLAVE: Actualizar el contexto inmediatamente
+    setAuthData(authData.user, authData.token);
+    
+    // Opcional: Mostrar info del token
+    const tokenInfo = tokenManager.getTokenInfo(authData.token);
+    if (tokenInfo) {
+      console.log(`Sesión iniciada. Expira en: ${tokenManager.getTokenTimeRemaining(authData.token)} minutos`);
+    }
   };
 
-  const register = useCallback(async (data: RegisterData) => {
+  const register = useCallback(async (data: RegisterData): Promise<boolean> => {
     setLoading(true);
     setError(null);
-    setRedirectPath(null);
 
     try {
       const response = await fetch(`${API_BASE}/auth/register`, {
@@ -73,24 +85,23 @@ export function useAuth(): UseAuthResult {
       if (!response.ok || !json.success) {
         const errorMessage = json.message || json.error || `Error ${response.status}`;
         setError(errorMessage);
-        return;
+        return false;
       }
 
       saveAuthData(json.data);
-
-      // En vez de redirigir, guardamos el path sugerido
-      setRedirectPath("/");
+      router.push("/");
+      return true;
     } catch (err: any) {
       setError(err.message || "Error de red");
+      return false;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router, setAuthData]);
 
-  const login = useCallback(async (data: LoginData) => {
+  const login = useCallback(async (data: LoginData): Promise<boolean> => {
     setLoading(true);
     setError(null);
-    setRedirectPath(null);
 
     try {
       const response = await fetch(`${API_BASE}/auth/login`, {
@@ -107,30 +118,28 @@ export function useAuth(): UseAuthResult {
       if (!response.ok || !json.success) {
         const errorMessage = json.message || json.error || `Error ${response.status}`;
         setError(errorMessage);
-        return;
+        return false;
       }
 
       saveAuthData(json.data);
-
-      // En vez de redirigir, guardamos el path sugerido
-      setRedirectPath("/");
+      router.push("/");
+      return true;
     } catch (err: any) {
       setError(err.message || "Error de red");
+      return false;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router, setAuthData]);
 
   const logout = useCallback(() => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setRedirectPath("auth/login"); // logout -> ir al login
-  }, []);
+    contextLogout(); // Usar la función del contexto
+    router.push("/auth/login");
+  }, [router, contextLogout]);
 
   return {
     loading,
     error,
-    redirectPath,
     register,
     login,
     logout,

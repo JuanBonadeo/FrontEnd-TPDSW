@@ -2,16 +2,16 @@
 [x] vista Busqueda de peliculas
 [x] Arreglar paginacion
 [x] Mejorar el seed de las peliculas 
-[] btn Logout
+[x] btn Logout
 [] form Modificar Perfil, con avatars disponibles cambair schema back
 [] revisar skeletons
 
-[] Banner Critio, con logo
+[] Mejorar Banner Critio, con logo
 [] Mejoroar UX/UI btn review
 [] Mejoroar UX/UI serach Page
 
 
-[] Cambiar logica de jwt, para poder ver si un token esta vencido, y revalidarlo.
+[x] Cambiar logica de jwt, para poder ver si un token esta vencido, y revalidarlo.
 [] Cambiar toda la logica del useApi, por funciones, usando la logica de nextjs, cache, revalidatePath, optimistic, y el loading
 [] Tirar revalidatePath despues de una review para que aparezca en la movie
 

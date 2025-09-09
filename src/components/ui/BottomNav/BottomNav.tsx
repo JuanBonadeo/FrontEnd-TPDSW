@@ -8,7 +8,7 @@ import { useAuthContext } from "@/context/AuthContext";
 
 export default function BottomNavbar() {
   const pathname = usePathname()
-  const { user, isAuthenticated, isLoading } = useAuthContext();
+  const { user, isAuthenticated } = useAuthContext();
   
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around h-16 bg border-t-1 border-gray-700 ">
