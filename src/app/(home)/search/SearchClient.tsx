@@ -46,7 +46,7 @@ export const SearchClient = ({ categoryId, page = 1, limit = 30, searchTerm }: P
 
       <div className="flex items-center">
         <button
-          className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-800 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-800 disabled:opacity-50 cursor-pointer"
           onClick={() => execute?.()}
           disabled={loading || !hasSearchCriteria}
           title={!hasSearchCriteria ? "Selecciona una categoría o término de búsqueda" : "Buscar películas"}

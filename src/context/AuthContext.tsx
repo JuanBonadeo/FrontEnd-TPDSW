@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { tokenManager } from "@/utils/tokenManager";
 import { User } from "@/lib/types";
@@ -128,11 +128,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Nueva función para establecer datos de autenticación
-  const setAuthData = (userData: User, userToken: string) => {
+  const setAuthData = useCallback((userData: User, userToken: string) => {
     setUser(userData);
     setToken(userToken);
     updateTokenTimeRemaining();
-  };
+  }, []);
 
   const logout = () => {
     tokenManager.clearTokens();

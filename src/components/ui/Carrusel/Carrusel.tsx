@@ -29,18 +29,18 @@ export default function Carrusel({ids, title = "Peliculas en Tendencia", autoPla
   const loading = all.some((r) => r.loading);
   const error = all.find((r) => r.error)?.error ?? null;
   const movies = all.map((r) => r.data).filter(Boolean) as Movie[];
-
+  
   const [current, setCurrent] = useState(0);
   const len = movies.length;
-  const wrap = (i: number) => (len ? (i + len) % len : 0);
-  const next = useCallback(() => setCurrent((p) => wrap(p + 1)), [len]);
-  const prev = useCallback(() => setCurrent((p) => wrap(p - 1)), [len]);
+  const wrap = useCallback((i: number) => (len ? (i + len) % len : 0), [len]);
+  const next = useCallback(() => setCurrent((p) => wrap(p + 1)), [wrap]);
+  const prev = useCallback(() => setCurrent((p) => wrap(p - 1)), [wrap]);
 
   useEffect(() => {
     if (!autoPlayMs || len <= 1) return;
     const id = setInterval(next, autoPlayMs);
     return () => clearInterval(id);
-  }, [autoPlayMs, len, next]);
+  }, [autoPlayMs, next, len]);
 
   // Loading único
   if (loading || len < 5) {

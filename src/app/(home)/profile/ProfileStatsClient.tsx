@@ -1,7 +1,8 @@
 "use client";
-import { ProfileTabs, UserStats } from "@/components/Profile/ProfileTabs";
+import { ProfileTabs } from "@/components/Profile/ProfileTabs";
 import { ProfileTabsSkeleton } from "@/components/Profile/ProfileTabsSkeleton";
-import { useAuthContext, User } from "@/context/AuthContext";
+import { useAuthContext } from "@/context/AuthContext";
+import { UserStats, User } from "@/lib/types";
 import { useApi } from "@/hooks/useApi";
 import React from "react";
 

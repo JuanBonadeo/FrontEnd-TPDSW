@@ -11,7 +11,7 @@ interface UseApiOptions<T> {
   handleUnauthorized?: boolean;
   requireAuth?: boolean;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  body?: any;
+  body?: Record<string, unknown>;
   onError?: (message: string, code?: string) => void;
   manual?: boolean;
 }

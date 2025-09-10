@@ -1,7 +1,7 @@
 "use client";
 
 import { useApi } from "@/hooks/useApi";
-import { WatchMovie } from "@/lib/types";
+import { ToWatch } from "@/lib/types";
 import React from "react";
 import MoviesGridSkeleton from "@/components/movies/Grid/MoviesGridSkeleton";
 import { Title } from "@/components/ui/title/Title";
@@ -13,7 +13,7 @@ export const WatchListClient = () => {
         data: watchlist,
         error,
         loading,
-      } = useApi<WatchMovie[]>("/watchlist", { requireAuth: true });
+      } = useApi<ToWatch[]>("/watchlist", { requireAuth: true });
 
       if (loading) return <MoviesGridSkeleton/>;
       if (error) return <div>Error loading watchlist: {error}</div>;    
@@ -26,7 +26,7 @@ export const WatchListClient = () => {
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {watchlist.map((watch) => (
-              <MovieWatchListCard key={watch.id_movie} watchlist={watch} />
+              <MovieWatchListCard key={watch.id_movie} toWatch={watch} />
             ))}
           </div>
         </>

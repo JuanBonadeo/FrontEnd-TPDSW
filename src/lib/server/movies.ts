@@ -21,7 +21,7 @@ export async function fetchMovies(page = 1, limit = 30) {
 
   const totalPages =
     // según tu ejemplo anterior, viene así:
-    (json as any).pagination?.totalPages ??
+    (json).pagination?.totalPages ??
     // fallback por si tu endpoint devuelve otra forma
     (JSON.parse(text).totalPages ?? 0);
 

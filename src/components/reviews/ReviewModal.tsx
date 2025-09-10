@@ -13,16 +13,6 @@ interface ReviewModalProps {
 
 export default function ReviewModal({ idMovie }: ReviewModalProps) {
   const { isAuthenticated } = useAuthContext();
-  
-  if (!isAuthenticated) return (
-    <button className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-      <div className="flex items-center">
-        <Hand className="w-5 h-5 mr-2" />
-        Iniciar sesión para reseñar
-      </div>
-    </button>
-  );
-
   const [open, setOpen] = useState(false);
   const [score, setScore] = useState<number>(5);
   const [content, setContent] = useState<string>("");
@@ -106,7 +96,15 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     if (rating <= 4) return "text-blue-400";
     return "text-green-400";
   };
-
+  
+  if (!isAuthenticated) return (
+    <button className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+      <div className="flex items-center">
+        <Hand className="w-5 h-5 mr-2" />
+        Iniciar sesión para reseñar
+      </div>
+    </button>
+  );
   return (
     <>
       {/* Trigger Button - Mejorado */}

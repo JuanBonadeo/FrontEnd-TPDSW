@@ -10,7 +10,7 @@ interface SearchParams {
   title?: string;
 }
 interface Props {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }
 
 export default async function SearchPage({ searchParams }: Props) {

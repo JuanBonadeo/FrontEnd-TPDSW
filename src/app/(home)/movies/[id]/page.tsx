@@ -2,7 +2,9 @@
 import MovieDetailClient from "./MovieDetailClient";
 import ReviewSectionClient from "./ReviewSectionClient";
 
-type PageProps = { params: { id: string } };
+type PageProps = { 
+  params: Promise<{ id: string }>;
+};
 
 export default async function MovieDetailPage({ params }: PageProps) {
   const { id } = await  params;

@@ -51,7 +51,7 @@ export function useAuth(): UseAuthResult {
   const router = useRouter();
   const { logout: contextLogout, setAuthData } = useAuthContext(); // Usar funciones del contexto
 
-  const saveAuthData = (authData: AuthResponse) => {
+  const saveAuthData = useCallback((authData: AuthResponse) => {
     // Guardar en localStorage (como antes)
     tokenManager.storeToken(authData.token);
     localStorage.setItem("user", JSON.stringify(authData.user));
@@ -64,7 +64,7 @@ export function useAuth(): UseAuthResult {
     if (tokenInfo) {
       console.log(`Sesión iniciada. Expira en: ${tokenManager.getTokenTimeRemaining(authData.token)} minutos`);
     }
-  };
+  }, [setAuthData]);
 
   const register = useCallback(async (data: RegisterData): Promise<boolean> => {
     setLoading(true);
@@ -91,13 +91,13 @@ export function useAuth(): UseAuthResult {
       saveAuthData(json.data);
       router.push("/");
       return true;
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || "Error de red");
       return false;
     } finally {
       setLoading(false);
     }
-  }, [router, setAuthData]);
+  }, [router, saveAuthData]);
 
   const login = useCallback(async (data: LoginData): Promise<boolean> => {
     setLoading(true);
@@ -124,13 +124,13 @@ export function useAuth(): UseAuthResult {
       saveAuthData(json.data);
       router.push("/");
       return true;
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || "Error de red");
       return false;
     } finally {
       setLoading(false);
     }
-  }, [router, setAuthData]);
+  }, [router, saveAuthData]);
 
   const logout = useCallback(() => {
     contextLogout(); // Usar la función del contexto
