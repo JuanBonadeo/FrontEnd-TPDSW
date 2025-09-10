@@ -19,31 +19,32 @@ interface IsFavourite {
 export function FavouriteButton({ idMovie }: Props) {
   const [isFavouriteState, setIsFavourite] = useState(false);
   const { isAuthenticated } = useAuthContext();
+  
+  const { data, error, loading } = useApi<IsFavourite>(
+    `/favourites/isFavourite/${idMovie}`,
+    { requireAuth: true }
+  );
+  
+  useEffect(() => {
+    if (data) {
+      setIsFavourite(data.isFavourite);
+    }
+  }, [data]);
+  
+  const { execute } = useApi<Favourite>("/favourites/toggle", {
+    method: "PUT",
+    requireAuth: true,
+    body: { id_movie: idMovie },
+    
+  });
+  
   if (!isAuthenticated) return (
       <Link href="/auth/login" className={"flex items-center justify-center rounded-md py-2 w-xl transition-colors cursor-pointer bg-red-600 hover:bg-red-700"}>
         <Heart className={"w-4 h-4 mr-2"} />
         Agregar a favoritos
       </Link>
   );
-
-  const { data, error, loading } = useApi<IsFavourite>(
-    `/favourites/isFavourite/${idMovie}`,
-    { requireAuth: true }
-  );
-
-  useEffect(() => {
-    if (data) {
-      setIsFavourite(data.isFavourite);
-    }
-  }, [data]);
-
-  const { execute } = useApi<Favourite>("/favourites/toggle", {
-    method: "PUT",
-    requireAuth: true,
-    body: { id_movie: idMovie },
-
-  });
-
+  
   const handleToggle = () => {
     setIsFavourite(!isFavouriteState);
     execute();
