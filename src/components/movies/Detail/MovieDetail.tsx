@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image"
-import { Star, Heart, Check, Clock, Calendar, Hand, Plus } from "lucide-react"
+import { Star, Clock, Calendar } from "lucide-react"
 import { getImageUrl } from "@/utils/getImageUrl"
 import Link from "next/link"
 import { Movie } from "@/lib/types.js"
