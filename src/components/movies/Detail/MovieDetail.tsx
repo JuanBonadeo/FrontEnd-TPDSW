@@ -61,16 +61,15 @@ export function MovieDetail({ movie }: Props) {
 
 
         {/* Botones favoritos/vista */}
-        <div className="flex space-x-3 w-full justify-center">
+        <div className="grid grid-cols-3 gap-2">
 
           <FavouriteButton idMovie={movie.id_movie} />
 
 
-          <div className="flex items-center justify-center bg-stone-900 rounded-md py-2 w-xl hover:bg-stone-800 transition-colors cursor-pointer">
-        
-            <ToWatchButton idMovie={movie.id_movie}/>
+          
+          <ToWatchButton idMovie={movie.id_movie}/>
 
-          </div>
+         
           
           <ReviewModal idMovie={movie.id_movie.toString()}/>
         </div>

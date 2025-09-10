@@ -1,19 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Hand, X } from "lucide-react";
+import { Hand, X, Star, Send } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
 import { useAuthContext } from "@/context/AuthContext";
-import Link from "next/link.js";
 
-type ReviewResponse = {
-  id_review: number;
-  id_movie: number;
-  rating: number;
-  title?: string | null;
-  content: string;
-  created_at: string;
-};
+
 
 interface ReviewModalProps {
   idMovie: string;
@@ -21,20 +13,21 @@ interface ReviewModalProps {
 
 export default function ReviewModal({ idMovie }: ReviewModalProps) {
   const { isAuthenticated } = useAuthContext();
+  
   if (!isAuthenticated) return (
-      <Link href="/auth/login" className="flex items-center justify-center bg-blue-600 rounded-md py-2 w-xl hover:bg-blue-700 transition-colors cursor-pointer">
-        <Hand className={"w-4 h-4 mr-2"} />
-        Reseñar
-      </Link>
+    <button className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+      <div className="flex items-center">
+        <Hand className="w-5 h-5 mr-2" />
+        Iniciar sesión para reseñar
+      </div>
+    </button>
   );
+
   const [open, setOpen] = useState(false);
-
-  // Form state
   const [score, setScore] = useState<number>(5);
-  const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [hoveredStar, setHoveredStar] = useState<number>(0);
 
-  // Para pasar el body al hook y que execute use lo último
   const body = useMemo(
     () => ({
       id_movie: idMovie,
@@ -44,30 +37,20 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     [idMovie, score, content]
   );
 
-  const {
-    data: created,
-    loading,
-    error,
-    errorCode,
-    execute,
-  } = useApi<ReviewResponse>("/reviews", {
+  const { data: created, loading, error, execute } = useApi("/reviews", {
     method: "POST",
     requireAuth: true,
     body,
   });
 
-  // Cerrar cuando se crea con éxito
   useEffect(() => {
     if (created && open) {
       setOpen(false);
-      // Reset del form (opcional)
       setScore(5);
-      setTitle("");
       setContent("");
     }
   }, [created, open]);
 
-  // Bloquear scroll del body al abrir
   useEffect(() => {
     if (open) {
       const prev = document.body.style.overflow;
@@ -78,7 +61,6 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     }
   }, [open]);
 
-  // Cerrar con ESC
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -88,134 +70,205 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Click fuera para cerrar (focus trap simple)
   const backdropRef = useRef<HTMLDivElement | null>(null);
   const onBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === backdropRef.current) setOpen(false);
   };
 
-  // Validación sencilla
   const canSubmit =
     !loading &&
     score >= 1 &&
     score <= 5 &&
-    content.trim().length >= 10 && // mínimo 10 chars
-    content.trim().length <= 2000; // máximo 2000 chars
+    content.trim().length >= 10 &&
+    content.trim().length <= 2000;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (!canSubmit) return;
-    await execute?.(); // dispara el POST
+    await execute?.();
+  };
+
+  const handleStarClick = (rating: number) => {
+    setScore(rating);
+  };
+
+  const getRatingText = (rating: number) => {
+    if (rating <= 1) return "Muy mala";
+    if (rating <= 2) return "Mala";
+    if (rating <= 3) return "Regular";
+    if (rating <= 4) return "Buena";
+    return "Excelente";
+  };
+
+  const getRatingColor = (rating: number) => {
+    if (rating <= 1) return "text-red-400";
+    if (rating <= 2) return "text-orange-400";
+    if (rating <= 3) return "text-yellow-400";
+    if (rating <= 4) return "text-blue-400";
+    return "text-green-400";
   };
 
   return (
     <>
-      {/* Trigger */}
+      {/* Trigger Button - Mejorado */}
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center justify-center bg-blue-600 rounded-md py-2 w-xl hover:bg-blue-700 transition-colors cursor-pointer"
+        className="flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
         title="Escribir una reseña"
       >
-        <Hand className="w-4 h-4 mr-2" />
-        Reseñar
+        <div className="flex items-center relative z-10">
+          <Hand className="w-5 h-5 mr-2 group-hover:rotate-360 transition-transform duration-600" />
+          Escribir reseña
+        </div>
+        <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
       </button>
 
-      {/* Modal */}
+      {/* Modal - Completamente rediseñado */}
       {open && (
         <div
           ref={backdropRef}
           onClick={onBackdropClick}
-          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-4"
+          className="fixed inset-0 z-50 bg-black/60  flex items-center justify-center px-4"
           aria-modal="true"
           role="dialog"
         >
-          <div className="w-full bg max-w-lg rounded-2xl bg-background text-foreground shadow-2xl border border-white/10">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-white/10">
-              <h2 className="text-xl font-semibold">Nueva reseña</h2>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-md p-2 hover:bg-white/5"
-                aria-label="Cerrar"
-                title="Cerrar"
-              >
-                <X className="h-5 w-5" />
-              </button>
+          <div className="w-full max-w-md bg2 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 ">
+            {/* Header con gradiente */}
+            <div className="relative bg-gradient-to-r  rounded-t-md p-3 border-b border-white/10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    Nueva reseña
+                  </h2>
+                  <p className="text-gray-400 text-sm mt-1">Comparte tu opinión</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="rounded-full p-2 hover:bg-white/10 transition-colors group"
+                  aria-label="Cerrar"
+                >
+                  <X className="h-5 w-5 text-gray-400 group-hover:text-white transition-colors" />
+                </button>
+              </div>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="p-4 space-y-4">
-              <div className="grid grid-cols-1 gap-4">
-                {/* Rating */}
-                <div>
-                  <label className="block text-sm mb-1">Rating (1–5)</label>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="number"
-                      min={1}
-                      max={5}
-                      step={.1}
-                      value={score}
-                      onChange={(e) => setScore(Number(e.target.value))}
-                      className="w-24 rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
-                    />
-                    <input
-                      type="range"
-                      min={1}
-                      max={5}
-                      step={.1}
-                      value={score}
-                      onChange={(e) => setScore(Number(e.target.value))}
-                      className="w-full text-red"
-                    />
-                  </div>
+            {/* Content */}
+            <div className="p-3">
+              {/* Rating con estrellas interactivas */}
+              <div className="space-y-3">
+                <label className="block text-lg font-semibold text-white">
+                  ¿Cómo calificarías esta película?
+                </label>
+                
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => handleStarClick(star)}
+                      onMouseEnter={() => setHoveredStar(star)}
+                      onMouseLeave={() => setHoveredStar(0)}
+                      className="group transition-transform hover:scale-125 focus:scale-125 active:scale-110"
+                    >
+                      <Star
+                        className={`w-8 h-8 transition-all duration-200 ${
+                          star <= (hoveredStar || score)
+                            ? "fill-yellow-400 text-yellow-400 drop-shadow-lg"
+                            : "text-gray-600 hover:text-gray-400"
+                        }`}
+                      />
+                    </button>
+                  ))}
                 </div>
 
-                
+                <div className="flex items-center gap-3">
+                  <span className={`font-bold text-lg ${getRatingColor(score)}`}>
+                    {score}/5
+                  </span>
+                  <span className="text-gray-400">•</span>
+                  <span className={`font-medium ${getRatingColor(score)}`}>
+                    {getRatingText(score)}
+                  </span>
+                </div>
+              </div>
 
-                {/* Contenido */}
-                <div>
-                  <label className="block text-sm mb-1">Contenido</label>
+              {/* Textarea */}
+              <div className="space-y-3">
+                <label className="block text-lg font-semibold text-white">
+                  Cuéntanos qué te pareció
+                </label>
+                
+                <div className="relative">
                   <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    rows={6}
-                    placeholder="Escribí tu reseña (mínimo 10 caracteres)…"
-                    className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary resize-y"
+                    rows={5}
+                    placeholder="Comparte tu opinión, qué te gustó, qué mejorarías..."
+                    className="w-full bg border border-gray-700 rounded-2xl px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all resize-none"
                   />
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {Math.max(0, 10 - content.trim().length)} caracteres para el mínimo.
-                  </p>
+                  
+                  {/* Contador de caracteres */}
+                  <div className="absolute bottom-3 right-3">
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      content.trim().length >= 10 
+                        ? 'bg-green-500/20 text-green-400' 
+                        : 'bg-gray-700/50 text-gray-500'
+                    }`}>
+                      {content.trim().length}/2000
+                    </span>
+                  </div>
                 </div>
+
+                {content.trim().length < 10 && (
+                  <p className="text-orange-400 text-sm flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>
+                    Necesitas al menos {10 - content.trim().length} caracteres más
+                  </p>
+                )}
               </div>
 
               {/* Error */}
               {error && (
-                <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">
-                  {error} {errorCode ? `(${errorCode})` : ""}
+                <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4">
+                  <p className="text-red-400 text-sm font-medium">{error}</p>
                 </div>
               )}
 
-              {/* Actions */}
-              <div className="flex items-center justify-end gap-2 pt-2">
+              {/* Botones */}
+              <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="rounded-md px-4 py-2 text-sm hover:bg-white/5"
+                  className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-3 px-4 rounded-xl font-medium transition-colors"
                 >
                   Cancelar
                 </button>
+                
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={() => handleSubmit()}
                   disabled={!canSubmit}
-                  className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                    canSubmit
+                      ? "bg-gradient-to-r bg-red-600  hover:bg-red-800 transform hover:scale-102 active:scale-95"
+                      : "bg-gray-700 text-gray-500 cursor-not-allowed"
+                  }`}
                 >
-                  {loading ? "Guardando…" : "Publicar reseña"}
+                  {loading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Publicando...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Publicar reseña
+                    </>
+                  )}
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

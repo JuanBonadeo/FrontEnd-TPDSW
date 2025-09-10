@@ -35,10 +35,10 @@ export function ToWatchButton({ idMovie }: Props) {
     body: { id_movie: idMovie },
   });
 
-    if (!isAuthenticated) return (
-      <Link href="/auth/login" className={"flex items-center justify-center rounded-md py-2 w-xl transition-colors cursor-pointer bg-red-600 hover:bg-red-700"}>
-        <Plus className={"w-4 h-4 mr-2"} />
-      </Link>
+  if (!isAuthenticated) return (
+    <Link href="/auth/login" className={"flex items-center justify-center rounded-md py-2  transition-colors cursor-pointer bg-red-600 hover:bg-red-700"}>
+      <Plus className={"w-5 h-5 mr-2"} />
+    </Link>
   );
 
   const handleToggle = () => {
@@ -48,16 +48,15 @@ export function ToWatchButton({ idMovie }: Props) {
 
   if (error) return <div>Error loading toWatch status: {error}</div>;
 
-    return (
+  return (
     <button
       type="button"
       disabled={loading}
       className={clsx(
-        "flex items-center justify-center rounded-md py-2 px-4 w-full transition-colors cursor-pointer",
-        " bg-stone-900 hover:bg-stone-800",
+        "flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white px-6 py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95",
         loading && "opacity-70 cursor-not-allowed"
       )}
-      
+
 
       onClick={() => {
         handleToggle();
@@ -70,10 +69,12 @@ export function ToWatchButton({ idMovie }: Props) {
             : "Agregar a la Watchlist"
       }
     >
+      <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
+
       {toWatchState ? (
-        <Minus className="w-4 h-4 mr-2" />
+        <Minus className="w-5 h-5 mr-2 group-hover:rotate-360 transition-transform duration-600" />
       ) : (
-        <Plus className="w-4 h-4 mr-2" />
+        <Plus className="w-5 h-5 mr-2 group-hover:rotate-360 transition-transform duration-600" />
       )}
       {loading
         ? "Cargando…"

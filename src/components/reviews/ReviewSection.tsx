@@ -1,6 +1,4 @@
 
-import { Star } from "lucide-react"
-import Image from "next/image"
 import { Title } from "../ui/title/Title"
 import { ReviewCard } from "./ReviewCard"
 import { Review } from '@/lib/types'
@@ -14,7 +12,7 @@ export function ReviewSection({ reviews }: { reviews: Review[] }) {
             <Title title="Reviews"  size="2xl"/>
             <div className="space-y-3">
                 {reviews.map((review) => (
-                    <ReviewCard key={review.comment} review={review} />
+                    <ReviewCard key={review.id_review} review={review} />
                 ))}
             </div>
         </div>

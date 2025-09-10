@@ -79,6 +79,7 @@ export interface Review {
   review_date: string;
   updated_at: string;
   User?: ReviewUser | null;
+  Movie?: Movie | null;
 }
 
 
@@ -138,7 +139,7 @@ export type Favourite = {
   Movie: MovieLite;
 };
 
-export type WatchMovie = {
+export type ToWatch = {
   id_user: string;
   id_movie: number;
   created_at: string; // ISO va?
@@ -153,3 +154,26 @@ export type Category = {
   created_at: string; // ISO
 }
 
+export interface UserStats {
+  id: string;
+  name: string;
+  email: string;
+  password: string; // hash
+  birth_date: string; // ISO string
+  role: "USER" | "ADMIN"; // ampliar si tenés más roles
+  isActive: boolean;
+  emailVerified: boolean;
+  image: string | null;
+  created_at: string;
+  updated_at: string;
+  Favorite: Favourite[];
+  ToWatch:  ToWatch[];
+  Review: Review[];
+  _count: UserCount;
+}
+
+
+export interface UserCount {
+  Favorite: number;
+  Review: number;
+}

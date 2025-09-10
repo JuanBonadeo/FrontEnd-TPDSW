@@ -19,32 +19,32 @@ interface IsFavourite {
 export function FavouriteButton({ idMovie }: Props) {
   const [isFavouriteState, setIsFavourite] = useState(false);
   const { isAuthenticated } = useAuthContext();
-  
+
   const { data, error, loading } = useApi<IsFavourite>(
     `/favourites/isFavourite/${idMovie}`,
     { requireAuth: true }
   );
-  
+
   useEffect(() => {
     if (data) {
       setIsFavourite(data.isFavourite);
     }
   }, [data]);
-  
+
   const { execute } = useApi<Favourite>("/favourites/toggle", {
     method: "PUT",
     requireAuth: true,
     body: { id_movie: idMovie },
-    
+
   });
-  
+
   if (!isAuthenticated) return (
-      <Link href="/auth/login" className={"flex items-center justify-center rounded-md py-2 w-xl transition-colors cursor-pointer bg-red-600 hover:bg-red-700"}>
-        <Heart className={"w-4 h-4 mr-2"} />
-        Agregar a favoritos
-      </Link>
+    <Link href="/auth/login" className={"flex items-center justify-center rounded-md py-2 transition-colors cursor-pointer bg-red-600 hover:bg-red-700"}>
+      <Heart className={"w-4 h-4 mr-2"} />
+      Agregar a favoritos
+    </Link>
   );
-  
+
   const handleToggle = () => {
     setIsFavourite(!isFavouriteState);
     execute();
@@ -57,8 +57,7 @@ export function FavouriteButton({ idMovie }: Props) {
       type="button"
       disabled={loading}
       className={clsx(
-        "flex items-center justify-center rounded-md py-2 w-xl transition-colors cursor-pointer",
-        "bg-red-600 hover:bg-red-700",
+        "flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95",
         loading && "opacity-70 cursor-not-allowed"
       )}
       // TODO: acá podés hacer el toggle con POST/DELETE cuando tengas esos endpoints
@@ -74,14 +73,16 @@ export function FavouriteButton({ idMovie }: Props) {
       }
     >
       <Heart
-        className={"w-4 h-4 mr-2"}
+        className={"w-5 h-5 mr-2 group-hover:rotate-360 transition-transform duration-600"}
         fill={isFavouriteState ? "white" : "transparent"}
       />
+
       {loading
         ? "Cargando…"
         : isFavouriteState
-          ? "En favoritos"
-          : "Agregar a Favoritos"}
+        ? "En favoritos"
+        : "Agregar a Favoritos"}
+        <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
     </button>
   );
 }

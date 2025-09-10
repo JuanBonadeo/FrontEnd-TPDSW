@@ -7,7 +7,7 @@
 [] revisar skeletons
 
 [] Mejorar Banner Critio, con logo
-[] Mejoroar UX/UI btn review
+[x] Mejoroar UX/UI btn review
 [] Mejoroar UX/UI serach Page
 
 
@@ -16,5 +16,5 @@
 [] Tirar revalidatePath despues de una review para que aparezca en la movie
 
 [x] vista watchList, con logica Backend
-[] cambiar vista page a watchlist page del user
+[x] cambiar vista page a watchlist page del user
 [] hacer responsive toda la pagina
