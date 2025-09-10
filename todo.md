@@ -15,5 +15,6 @@
 [] Cambiar toda la logica del useApi, por funciones, usando la logica de nextjs, cache, revalidatePath, optimistic, y el loading
 [] Tirar revalidatePath despues de una review para que aparezca en la movie
 
-[] vista watchList, con logica Backend
+[x] vista watchList, con logica Backend
+[] cambiar vista page a watchlist page del user
 [] hacer responsive toda la pagina
