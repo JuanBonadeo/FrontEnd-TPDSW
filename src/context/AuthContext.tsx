@@ -3,19 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { tokenManager } from "@/utils/tokenManager";
+import { User } from "@/lib/types";
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  birth_date: string;
-  role: string;
-  isActive: boolean;
-  emailVerified: boolean;
-  image: string | null;
-  created_at: string;
-  updated_at: string;
-}
+
 
 interface AuthContextType {
   user: User | null;
@@ -116,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
-      const response = await fetch(`${API_BASE}/auth/me`, {
+      const response = await fetch(`${API_BASE}/auth/profile`, {
         headers: {
           'Authorization': `Bearer ${currentToken}`,
           'Accept': 'application/json',

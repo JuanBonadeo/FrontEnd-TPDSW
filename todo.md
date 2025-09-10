@@ -3,7 +3,7 @@
 [x] Arreglar paginacion
 [x] Mejorar el seed de las peliculas 
 [x] btn Logout
-[] form Modificar Perfil, con avatars disponibles cambair schema back
+[x] form Modificar Perfil, con avatars disponibles cambair schema back
 [] revisar skeletons
 
 [] Mejorar Banner Critio, con logo
@@ -17,3 +17,4 @@
 
 [] vista watchList, con logica Backend
 [] hacer responsive toda la pagina
+[] manejar variables de entorno

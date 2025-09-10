@@ -82,7 +82,7 @@ export interface Review {
 }
 
 
-interface User {
+export interface User {
   id: string;
   name: string;
   email: string;
@@ -91,28 +91,29 @@ interface User {
   isActive: boolean;
   emailVerified: boolean;
   image: string | null;
+  bio?: string | null;
   created_at: string;
   updated_at: string;
 }
 
-interface AuthResponse {
+export interface AuthResponse {
   user: User;
   token: string;
 }
 
-interface RegisterData {
+export interface RegisterData {
   name: string;
   email: string;
   password: string;
   birth_date: string;
 }
 
-interface LoginData {
+export interface LoginData {
   email: string;
   password: string;
 }
 
-interface UseAuthResult {
+export interface UseAuthResult {
   loading: boolean;
   error: string | null;
   register: (data: RegisterData) => Promise<void>;
