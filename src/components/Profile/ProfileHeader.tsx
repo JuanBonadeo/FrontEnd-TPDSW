@@ -99,11 +99,11 @@ export function ProfileHeader({ user }: Props) {
         <div>
           <h1 className="text-2xl font-bold">{user.name}</h1>
           <div className="flex gap-1 justify-start items-center ">
-            <p className="text-sm text-muted-foreground">{user.email}</p>
-            <span> -  {age} años</span>
+            <p className="text-sm text-muted-foreground">{user.email} -  {age} años</p>
+           
           </div>
         </div>
-        {user.bio && <p className="text-sm text-muted-foreground"><b>Bio:</b> {user.bio}</p>}
+        {user.bio && <p className="text-sm text-muted-foreground"><b className="text-white">Bio:</b> {user.bio}</p>}
       </div>
     </div>
   )

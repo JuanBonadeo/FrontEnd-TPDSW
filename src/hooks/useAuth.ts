@@ -134,7 +134,7 @@ export function useAuth(): UseAuthResult {
 
   const logout = useCallback(() => {
     contextLogout(); // Usar la función del contexto
-    router.push("/auth/login");
+    router.push("/");
   }, [router, contextLogout]);
 
   return {
