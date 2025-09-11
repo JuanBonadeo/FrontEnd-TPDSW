@@ -3,8 +3,9 @@
 import { useApi } from "@/hooks/useApi";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/AuthContext";
-import { Link, Plus, Minus } from "lucide-react";
+import {  Plus, Minus } from "lucide-react";
 import { clsx } from "clsx";
+import Link from "next/link.js";
 
 interface Props {
   idMovie: number;
@@ -35,11 +36,14 @@ export function ToWatchButton({ idMovie }: Props) {
     body: { id_movie: idMovie },
   });
 
-  if (!isAuthenticated) return (
-    <Link href="/auth/login" className={"flex items-center justify-center rounded-md py-2  transition-colors cursor-pointer bg-red-600 hover:bg-red-700"}>
-      <Plus className={"w-5 h-5 mr-2"} />
+   if (!isAuthenticated) return (
+    <Link href="/auth/login" className={"flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"}>
+      <Plus className={"w-4 h-4 md:w-5 md:h-5 mr-2 group-hover:rotate-360 transition-transform duration-600"} />
+      <span className="text-xs">No Favorita</span>
+      <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
     </Link>
   );
+
 
   const handleToggle = () => {
     setToWatch(!toWatchState);
@@ -53,34 +57,21 @@ export function ToWatchButton({ idMovie }: Props) {
       type="button"
       disabled={loading}
       className={clsx(
-        "flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white px-6 py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95",
+        "flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95",
         loading && "opacity-70 cursor-not-allowed"
       )}
-
-
       onClick={() => {
         handleToggle();
       }}
-      title={
-        error
-          ? "No se pudo cargar la Watchlist"
-          : toWatchState
-            ? "Quitar de la Watchlist"
-            : "Agregar a la Watchlist"
-      }
     >
-      <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
 
       {toWatchState ? (
-        <Minus className="w-5 h-5 mr-2 group-hover:rotate-360 transition-transform duration-600" />
+        <Minus className="w-4 h-4 md:w-5 md:h-5 mr-2 group-hover:rotate-360 transition-transform duration-600" />
       ) : (
-        <Plus className="w-5 h-5 mr-2 group-hover:rotate-360 transition-transform duration-600" />
+        <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2 group-hover:rotate-360 transition-transform duration-600" />
       )}
-      {loading
-        ? "Cargando…"
-        : toWatchState
-          ? "Quitar de Watchlist"
-          : "Agregar a Watchlist"}
+      <span className="text-xs">{loading ? "Cargando…" : "Watchlist"}</span>
+      <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
     </button>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Hand, X, Star, Send } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
 import { useAuthContext } from "@/context/AuthContext";
+import Link from "next/link.js";
 
 
 
@@ -96,14 +97,13 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     if (rating <= 4) return "text-blue-400";
     return "text-green-400";
   };
-  
+
   if (!isAuthenticated) return (
-    <button className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-      <div className="flex items-center">
-        <Hand className="w-5 h-5 mr-2" />
-        Iniciar sesión para reseñar
-      </div>
-    </button>
+    <Link href="/auth/login" className={"flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800  py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"}>
+      <Hand className={"w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600"} />
+      <span className="text-xs">Reseña</span>
+      <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
+    </Link>
   );
   return (
     <>
@@ -111,13 +111,10 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
-        title="Escribir una reseña"
+        className="flex items-center justify-center  group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
       >
-        <div className="flex items-center relative z-10">
-          <Hand className="w-5 h-5 mr-2 group-hover:rotate-360 transition-transform duration-600" />
-          Escribir reseña
-        </div>
+          <Hand className="w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600" />
+          <span className="text-xs">Reseña</span>
         <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
       </button>
 
@@ -158,7 +155,7 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
                 <label className="block text-lg font-semibold text-white">
                   ¿Cómo calificarías esta película?
                 </label>
-                
+
                 <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -170,11 +167,10 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
                       className="group transition-transform hover:scale-125 focus:scale-125 active:scale-110"
                     >
                       <Star
-                        className={`w-8 h-8 transition-all duration-200 ${
-                          star <= (hoveredStar || score)
+                        className={`w-8 h-8 transition-all duration-200 ${star <= (hoveredStar || score)
                             ? "fill-yellow-400 text-yellow-400 drop-shadow-lg"
                             : "text-gray-600 hover:text-gray-400"
-                        }`}
+                          }`}
                       />
                     </button>
                   ))}
@@ -196,7 +192,7 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
                 <label className="block text-lg font-semibold text-white">
                   Cuéntanos qué te pareció
                 </label>
-                
+
                 <div className="relative">
                   <textarea
                     value={content}
@@ -205,14 +201,13 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
                     placeholder="Comparte tu opinión, qué te gustó, qué mejorarías..."
                     className="w-full bg border border-gray-700 rounded-2xl px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all resize-none"
                   />
-                  
+
                   {/* Contador de caracteres */}
                   <div className="absolute bottom-3 right-3">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      content.trim().length >= 10 
-                        ? 'bg-green-500/20 text-green-400' 
+                    <span className={`text-xs px-2 py-1 rounded-full ${content.trim().length >= 10
+                        ? 'bg-green-500/20 text-green-400'
                         : 'bg-gray-700/50 text-gray-500'
-                    }`}>
+                      }`}>
                       {content.trim().length}/2000
                     </span>
                   </div>
@@ -242,16 +237,15 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
                 >
                   Cancelar
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={() => handleSubmit()}
                   disabled={!canSubmit}
-                  className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-                    canSubmit
+                  className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 ${canSubmit
                       ? "bg-gradient-to-r bg-red-600  hover:bg-red-800 transform hover:scale-102 active:scale-95"
                       : "bg-gray-700 text-gray-500 cursor-not-allowed"
-                  }`}
+                    }`}
                 >
                   {loading ? (
                     <>

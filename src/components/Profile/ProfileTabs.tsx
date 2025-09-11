@@ -22,11 +22,11 @@ export function ProfileTabs({userStats}: Props) {
     <div className="space-y-4">
       <div className="flex gap-6 pt-2">
         <div className="text-center">
-          <p className="text-lg font-bold">{userStats._count.Review}</p>
+          <p className="text-lg font-bold">{userStats._count.Favorite}</p>
           <p className="text-xs text-muted-foreground">Favoritos</p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold">21</p>
+          <p className="text-lg font-bold">{userStats._count.ToWatch}</p>
           <p className="text-xs text-muted-foreground">Watchlist</p>
         </div>
         <div className="text-center">
@@ -34,7 +34,7 @@ export function ProfileTabs({userStats}: Props) {
           <p className="text-xs text-muted-foreground">Reseñas</p>
         </div>
       </div>
-      <div className="flex border-gray-700 border-b">
+      <div className="flex border-gray-700 border-b mt-5">
         <button
           className={` cursor-pointer px-4 py-2 text-sm font-medium transition-all ${
             activeTab === "favorites" ? "active-tab" : "text-muted-foreground"

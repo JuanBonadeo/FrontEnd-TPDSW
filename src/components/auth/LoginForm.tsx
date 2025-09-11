@@ -78,7 +78,7 @@ export function LoginForm  ({ onLogin, loading }: Props) {
                 name="email"
                 type="email"
                 required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
+                className="mt-1 appearance-none relative block w-xs md:w-full px-3 py-2 border border-gray-300 placeholder-gray-500 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
                 placeholder="tu@email.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -98,7 +98,7 @@ export function LoginForm  ({ onLogin, loading }: Props) {
                 name="password"
                 type="password"
                 required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
+                className="mt-1 appearance-none relative block w-xs md:w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
                 placeholder="Contraseña"
                 value={formData.password}
                 onChange={handleChange}
@@ -114,7 +114,7 @@ export function LoginForm  ({ onLogin, loading }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className={`flex items-center justify-center rounded-md py-2 w-sm transition-colors cursor-pointer bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={`flex items-center justify-center rounded-md py-2 w-xs md:w-sm transition-colors cursor-pointer bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {loading ? "Iniciando sesión..." : "Iniciar sesión"}
             </button>

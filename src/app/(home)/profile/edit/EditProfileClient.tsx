@@ -7,7 +7,7 @@ import Image from "next/image.js";
 import { redirect } from "next/navigation.js";
 import { useEffect, useState } from "react"
 
-const avatars = [ "avatar1", "avatar2", "avatar3", "avatar4", "avatar5", "avatar6", "avatar7",
+const avatars = ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5", "avatar6", "avatar7",
     "avatar8", "avatar9", "avatar10", "avatar11", "avatar12", "avatar13", "avatar14"
 ];
 
@@ -30,17 +30,17 @@ export const EditProfileClient = () => {
             setAvatar(user.image || "avatar");
         }
     }, [user, isLoading]);
-    
-    const { data: updatedUser, execute } = useApi<User>('/auth/profile',{
+
+    const { data: updatedUser, execute } = useApi<User>('/auth/profile', {
         method: 'PATCH',
         requireAuth: true,
-        body: { name, image: avatar, bio}
+        body: { name, image: avatar, bio }
     });
 
     const handleSubmit = () => {
         setLoading(true);
         execute();
-        refreshUserData(); 
+        refreshUserData();
         setTimeout(() => {
             setLoading(false);
         }, 1000); // Simula un tiempo de espera para la actualización
@@ -48,18 +48,18 @@ export const EditProfileClient = () => {
             redirect('/profile');
         }, 1500);
     };
-    
-    
+
+
     const handleAvatarSelect = (selectedAvatar: string) => {
         setAvatar(selectedAvatar);
         setIsModalOpen(false);
     };
-    
-    if ( loading ) return <div className="flex justify-center items-center h-96">Actualizando...</div>;
+
+    if (loading) return <div className="flex justify-center items-center h-96">Actualizando...</div>;
     if (!isAuthenticated && !isLoading) return redirect('/auth/login');
     return (
         <>
-            <div className="grid grid-cols-2 gap-8 max-w-5xl bg py-5 px-4 sm:px-6 lg:px-8 rounded-xl" onSubmit={handleSubmit}>
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl bg py-5 px-4 sm:px-6 lg:px-8 rounded-xl" onSubmit={handleSubmit}>
                 <div className="flex flex-col">
                     <label htmlFor="name" className="block text-md font-medium mt-4">
                         Nombre
@@ -95,16 +95,10 @@ export const EditProfileClient = () => {
                         onChange={(e) => setBio(e.target.value)}
                     ></textarea>
 
-                    <button
-                        type="button"
-                        onClick={() => handleSubmit()}
-                        className="mt-8 bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors w-fit"
-                    >
-                        Guardar Cambios
-                    </button>
+
                 </div>
 
-                <div className="flex flex-col items-center justify-center mb-10">
+                <div className="flex flex-col items-center justify-center md:mb-10">
                     <Image
                         src={getAvatarUrl(avatar)}
                         alt={"Avatar seleccionado"}
@@ -123,17 +117,24 @@ export const EditProfileClient = () => {
                         Cambiar Avatar
                     </button>
                 </div>
+                <button
+                    type="button"
+                    onClick={() => handleSubmit()}
+                    className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors w-fit mx-auto md:mx-0"
+                >
+                    Guardar Cambios
+                </button>
             </div>
 
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 overflow-y-auto">
                     {/* Backdrop */}
-                    <div 
+                    <div
                         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
                         onClick={() => setIsModalOpen(false)}
                     ></div>
-                    
+
                     {/* Modal Content */}
                     <div className="flex items-center justify-center min-h-screen p-4">
                         <div className="relative bg rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden">
@@ -162,11 +163,10 @@ export const EditProfileClient = () => {
                                             key={avatarOption}
                                             type="button"
                                             onClick={() => handleAvatarSelect(avatarOption)}
-                                            className={`relative  rounded-lg transition-all duration-200 hover:scale-105 flex justify-center items-center ${
-                                                avatar === avatarOption
+                                            className={`relative  rounded-lg transition-all duration-200 hover:scale-105 flex justify-center items-center ${avatar === avatarOption
                                                     ? 'ring-3 ring-red-500 bg-red-50'
                                                     : 'hover:bg-gray-600 hover:ring-2 hover:ring-gray-300'
-                                            }`}
+                                                }`}
                                         >
                                             <Image
                                                 src={getAvatarUrl(avatarOption)}

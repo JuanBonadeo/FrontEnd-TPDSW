@@ -39,9 +39,10 @@ export function FavouriteButton({ idMovie }: Props) {
   });
 
   if (!isAuthenticated) return (
-    <Link href="/auth/login" className={"flex items-center justify-center rounded-md py-2 transition-colors cursor-pointer bg-red-600 hover:bg-red-700"}>
-      <Heart className={"w-4 h-4 mr-2"} />
-      Agregar a favoritos
+    <Link href="/auth/login" className={"flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800  py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"}>
+      <Heart className={"w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600"} />
+      <span className="text-xs">No Favorita</span>
+      <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
     </Link>
   );
 
@@ -57,32 +58,20 @@ export function FavouriteButton({ idMovie }: Props) {
       type="button"
       disabled={loading}
       className={clsx(
-        "flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95",
+        "flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95",
         loading && "opacity-70 cursor-not-allowed"
       )}
-      // TODO: acá podés hacer el toggle con POST/DELETE cuando tengas esos endpoints
+      
       onClick={() => {
         handleToggle();
       }}
-      title={
-        error
-          ? "No se pudieron cargar tus favoritos"
-          : isFavouriteState
-            ? "Quitar de favoritos"
-            : "Agregar a favoritos"
-      }
     >
       <Heart
-        className={"w-5 h-5 mr-2 group-hover:rotate-360 transition-transform duration-600"}
+        className={"w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600"}
         fill={isFavouriteState ? "white" : "transparent"}
       />
-
-      {loading
-        ? "Cargando…"
-        : isFavouriteState
-        ? "En favoritos"
-        : "Agregar a Favoritos"}
-        <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
+      <span className="text-xs">{loading ? "Cargando…" : isFavouriteState ? "En favoritos" : "A Favoritos"}</span>
+      <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
     </button>
   );
 }

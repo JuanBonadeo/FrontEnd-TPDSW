@@ -26,8 +26,8 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${lexend.variable} antialiased bg2`}
-      >  <div className="min-h-screen  text-white p-4">
-            <div className="max-w-5xl mx-auto pb-25">
+      >  <div className="min-h-screen  text-white p-2 md:p-4">
+            <div className="max-w-4xl mx-auto pb-25">
               <AuthProvider>
                 {children}
                 

@@ -176,4 +176,5 @@ export interface UserStats {
 export interface UserCount {
   Favorite: number;
   Review: number;
+  ToWatch: number;
 }

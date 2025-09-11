@@ -8,6 +8,7 @@ import { FavouriteButton } from '../FavouriteButton/FavouriteButton';
 import { ToWatchButton } from "../ToWatchButton/ToWatchButton"
 import { useAuthContext } from "@/context/AuthContext"
 import ReviewModal from "@/components/reviews/ReviewModal"
+import clsx from "clsx"
 
 interface Props {
   movie: Movie
@@ -28,7 +29,7 @@ export function MovieDetail({ movie }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 flex flex-col gap-3">
         {/* Título, rating, año y duración */}
         <div className="flex items-start justify-between">
           <div>
@@ -65,13 +66,10 @@ export function MovieDetail({ movie }: Props) {
 
           <FavouriteButton idMovie={movie.id_movie} />
 
+          <ToWatchButton idMovie={movie.id_movie} />
 
-          
-          <ToWatchButton idMovie={movie.id_movie}/>
+          <ReviewModal idMovie={movie.id_movie.toString()} />
 
-         
-          
-          <ReviewModal idMovie={movie.id_movie.toString()}/>
         </div>
 
 
@@ -82,30 +80,38 @@ export function MovieDetail({ movie }: Props) {
         </div>
 
         {/* Actores */}
-        <div className="my-10">
-          <h2 className="mb-2 text-xl font-semibold text-center">Reparto</h2>
-          <div className="grid gap-2 md:grid-cols-5 md:gap-4">
-            {movie.Movie_Actor.map(({ Actor, character }, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center">
-                <Image
-                  src={getImageUrl(Actor.profile_path, "w185")}
-                  alt={`${Actor.first_name} ${Actor.last_name}`}
-                  width={60}
-                  height={60}
-                  className="rounded-full object-cover"
-                />
-                <Link className="text-sm font-medium mt-2" href={`/actors/${Actor.id_actor}`}>
-                  {Actor.first_name} {Actor.last_name}
-                </Link>
-                <p className="text-xs text-muted-foreground">{character}</p>
-              </div>
-            ))}
-          </div>
+          <h2 className="mb-2 text-xl font-semibold text-center">Actores</h2>
+        <div className="grid gap-2 grid-cols-2 md:grid-cols-5 md:gap-4">
+          {movie.Movie_Actor.map(({ Actor, character }, idx) => (
+            <div
+              key={idx}
+              className={clsx(
+                "flex flex-col items-center text-center",
+                idx === movie.Movie_Actor.length - 1 && "col-span-2 md:col-span-1"
+              )}
+            >
+              <Image
+                src={getImageUrl(Actor.profile_path, "w185")}
+                alt={`${Actor.first_name} ${Actor.last_name}`}
+                width={60}
+                height={60}
+                className="rounded-full object-cover"
+              />
+              <Link
+                className="text-sm font-medium mt-2"
+                href={`/actors/${Actor.id_actor}`}
+              >
+                {Actor.first_name} {Actor.last_name}
+              </Link>
+              <p className="text-xs text-muted-foreground">{character}</p>
+            </div>
+          ))}
         </div>
+
 
         {/* Director */}
         <div className="my-10">
-          <h2 className="mb-2 text-xl font-semibold text-center">Director</h2>
+          <h2 className="mb-4 text-xl font-semibold text-center">Director</h2>
           <div className="flex items-center justify-center gap-3">
             <Image
               src={getImageUrl(movie.Director.profile_path, "w185")}
