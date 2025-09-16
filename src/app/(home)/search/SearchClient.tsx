@@ -5,9 +5,10 @@ import { useApiPaginated } from "@/hooks/useApi";
 import { MovieApi } from "@/lib/types";
 import { MoviesGrid } from "@/components/movies/Grid/MoviesGrid";
 import MoviesGridSkeleton from "@/components/movies/Grid/MoviesGridSkeleton";
-import { CategoriesNav } from "@/components/ui/Search/CategoriesNav";
 import { SearchInput } from "@/components/ui/Search/SearchInput";
 import { Pagination } from "@/components/ui/pagination/Pagintation";
+import { CategoriesModal } from "@/components/ui/Search/CategoriesModal";
+import { Search } from "lucide-react";
 
 interface Props {
   categoryId?: string;
@@ -41,21 +42,26 @@ export const SearchClient = ({ categoryId, page = 1, limit = 30, searchTerm }: P
 
   return (
     <div className="space-y-6">
-      <SearchInput />
-      <CategoriesNav currentCategoryId={categoryId} />
-
-      <div className="flex items-center">
+      <div className="flex gap-2 flex-col max-w-md md:max-w-3xl md:flex-row">
+        <SearchInput />
+        <CategoriesModal currentCategoryId={categoryId} />
+        
         <button
-          className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-800 disabled:opacity-50 cursor-pointer"
+          className="flex items-center justify-center  group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
           onClick={() => execute?.()}
           disabled={loading || !hasSearchCriteria}
           title={!hasSearchCriteria ? "Selecciona una categoría o término de búsqueda" : "Buscar películas"}
         >
-          {loading ? "Buscando..." : movies ? "Buscar de nuevo" : "Buscar"}
+          <Search className="w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600" />
+          <span className="text-xs">{loading ? "Buscando..." : movies ? "Buscar de nuevo" : "Buscar"}</span>
+          <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
+          
         </button>
 
         {error && <span className="ml-3 text-sm text-red-400">Error: {error}</span>}
       </div>
+
+      
 
       {loading && <MoviesGridSkeleton />}
 
