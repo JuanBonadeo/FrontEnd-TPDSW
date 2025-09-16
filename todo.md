@@ -8,7 +8,7 @@
 
 [] Mejorar Banner Critio, con logo
 [x] Mejoroar UX/UI btn review
-[] Mejoroar UX/UI serach Page
+[x] Mejoroar UX/UI serach Page
 
 
 [x] Cambiar logica de jwt, para poder ver si un token esta vencido, y revalidarlo.

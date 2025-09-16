@@ -42,12 +42,12 @@ export const SearchClient = ({ categoryId, page = 1, limit = 30, searchTerm }: P
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-2 flex-col max-w-md md:max-w-3xl md:flex-row">
+      <div className="grid gap-2  items-center md:grid-cols-4 md:gap-4">
         <SearchInput />
         <CategoriesModal currentCategoryId={categoryId} />
         
         <button
-          className="flex items-center justify-center  group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
+          className="xs:w-xs flex items-center justify-center  group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
           onClick={() => execute?.()}
           disabled={loading || !hasSearchCriteria}
           title={!hasSearchCriteria ? "Selecciona una categoría o término de búsqueda" : "Buscar películas"}
