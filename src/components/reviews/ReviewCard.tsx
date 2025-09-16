@@ -22,7 +22,6 @@ export const ReviewCard = ({ review }: Props) => {
             <div className="flex items-start gap-3">
                 <div className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
                     <Image height={40} width={40} className="aspect-square h-full w-full" src={getAvatarUrl(review.User?.image)} alt={review.User?.name} />
-                    <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">{review.User?.name}</div>
                 </div>
                 <div className="flex-1">
                     <div className="flex items-center justify-between">
