@@ -23,8 +23,10 @@
     -[ ] permitir que el score de la review sea con coma
 
 [ ] ADMIN PANEL: hay que hacerlo todo, agregaria una opcion en las settings, para ir al panel
-    -[ ] Listar todos los usuarios, y que pueda cambiar rol de usuarios, con un select
-    -[ ] Listar todas las reviews, que pueda eliminar
+    -[x] Listar todos los usuarios, y 
+    -[ ] que pueda cambiar rol de usuarios, con un select
+    -[x] Listar todas las reviews, 
+    -[ ] que pueda eliminar
     <!-- -[ ] Listar todas las peliculas, que pueda editar data
     -[ ] Listar todas las actores, que pueda editar data
     -[ ] Listar todas las directores, que pueda editar data -->

@@ -1,10 +1,10 @@
 "use client";
 
 
-import { Settings, UserCog, LogOut } from "lucide-react"
+import { Settings, UserCog, LogOut, Waypoints } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { calcAge } from "../actors/detail/ActorDetail"
 import { useAuth } from "@/hooks/useAuth"; // Asegúrate de que esta sea la ruta correcta
 import { User } from "@/lib/types";
@@ -19,7 +19,6 @@ export function ProfileHeader({ user }: Props) {
   const { logout } = useAuth();
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
 
   // Cerrar menú cuando se hace click fuera
   useEffect(() => {
@@ -68,10 +67,8 @@ export function ProfileHeader({ user }: Props) {
           {/* Menú desplegable */}
           {showSettingsMenu && (
             <div className="absolute top-full right-0 mt-2 bg border border-border rounded-lg shadow-lg py-2 min-w-[180px] z-50">
-              {/* Flecha hacia arriba */}
-              <div className="absolute bottom-full right-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-border"></div>
-              <div className="absolute bottom-full right-4 translate-y-[1px] w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-background"></div>
 
+            
               <Link
                 href="/profile/edit"
                 className="flex items-center gap-3 px-4 py-3 hover:opacity-70 transition-colors text-sm"
@@ -90,6 +87,19 @@ export function ProfileHeader({ user }: Props) {
                 <LogOut className="w-4 h-4" />
                 <span>Cerrar Sesión</span>
               </button>
+              {user?.role === "ADMIN" && (
+                <>
+                  <div className="border-t border-border mx-2 my-1"></div>
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-3 px-4 py-3 hover:opacity-70 transition-colors text-sm"
+                    onClick={() => setShowSettingsMenu(false)}
+              >
+                <Waypoints className="w-4 h-4" />
+                <span>Admin Panel</span>
+              </Link>
+                </>
+              )}
             </div>
           )}
         </div>
