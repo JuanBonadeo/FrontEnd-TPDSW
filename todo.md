@@ -14,6 +14,7 @@
 [ ] revisar skeletons
 [ ] responsive del carrusel, cuando deslizas que cambie de peli, y ocultaria las flechas
 [ ] Moviespage: Hacer una pagina que muestre solamente el grid, con el pagination.
+
 [ ] SearchPage: 
     -[ ] responsive del modal de las categorias, y que indique por que categoria estas buscando
     -[ ] agregar Orden personalizado, ej (por anio de lanzamiento, etc)
@@ -33,6 +34,12 @@
     <!-- NO SE SI HACE FALTA -->
 
 [ ] Like en las reviews, hay que hacer modulo en el back, y ordenar las reviews siempre por likes
+
+Mejoras que nso recomendo Alejo
+[ ] Baja Logica, agregar atr deleted at a todas las clases, y cambiar las querys.
+[ ] Normalizar la BD, que todas las entidades tengan createdAt, updatedAt
+[ ] Usar transactions, en los metodos de los controller que usen mas de un DAO
+[ ] Separar la logica de express, con la de negocio, agregando la capa service, habria que tocar todo el codigo, es para kilombo.
 
 !Importante, pero no hace falta.
 [ ] Cambiar toda la logica del useApi, por funciones, usando la logica de nextjs, cache, revalidatePath, optimistic, y el loading

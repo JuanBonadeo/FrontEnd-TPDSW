@@ -13,12 +13,11 @@ export const ReviewsGrid = ({ reviews }: Props) => {
         return <p className="text-center text-gray-500">No reviews found.</p>;
     }
     
-    const handleDeleteReview = async (reviewId: string) => {
+    const HandleDeleteReview = async (reviewId: string) => {
         const { execute } = useApi(`reviews/${reviewId}`, {
             method: 'DELETE',
             requireAuth: true,
             manual: true,
-
         });
 
         try {
@@ -81,7 +80,7 @@ export const ReviewsGrid = ({ reviews }: Props) => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button
-                                    onClick={() => handleDeleteReview(review.id_review.toString())}
+                                    onClick={() => HandleDeleteReview(review.id_review.toString())}
                                     className="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                 >
                                     <Trash className="w-4 h-4" />
