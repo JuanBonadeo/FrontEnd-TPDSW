@@ -20,7 +20,7 @@ export default async function MovieDetailServer({ id }: { id: string }) {
   try {
     const movie = await fetchMovieById(id);
     return <MovieDetail movie={movie} />;
-  } catch (err: any) {
+  } catch (err) {
     if (err.message === "NOT_FOUND") notFound();
     throw err;
   }

@@ -19,7 +19,7 @@ export const ReviewsGrid = ({ reviews }: Props) => {
     }, [reviews]);
     
     // Hook para eliminar reviews - se ejecutará manualmente
-    const { execute, loading: deleteLoading } = useApi<any>(
+    const { execute, loading: deleteLoading } = useApi(
         deletingReviewId ? `reviews/${deletingReviewId}` : null,
         {
             method: 'DELETE',

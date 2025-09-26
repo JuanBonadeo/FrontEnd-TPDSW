@@ -4,7 +4,11 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 
 interface UpdateUserRoleResult {
   success: boolean;
-  data?: any;
+  data: {
+    userId?: string;
+    role?: string;
+    [key: string]: unknown;
+  };
   error?: string;
   code?: string;
 }
@@ -40,6 +44,7 @@ export async function updateUserRoleWithToken(
 
       return {
         success: false,
+        data: {},
         error: message,
         code: code
       };
@@ -55,6 +60,7 @@ export async function updateUserRoleWithToken(
     
     return {
       success: false,
+      data: {},
       error: errorMessage,
       code: "FETCH_ERROR"
     };
