@@ -10,6 +10,8 @@
 [x] vista watchList, con logica Backend
 [x] cambiar vista page a watchlist page del user
 
+
+- Todos Faciles
 [ ] Mejorar Banner Critio, con logo
 [ ] revisar skeletons
 [ ] responsive del carrusel, cuando deslizas que cambie de peli, y ocultaria las flechas
@@ -27,7 +29,8 @@
     -[x] Listar todos los usuarios, y 
     -[ ] que pueda cambiar rol de usuarios, con un select
     -[x] Listar todas las reviews, 
-    -[ ] que pueda eliminar
+    -[x] que pueda eliminar
+    -[ ] Listar Peliculas, que se puedan editar, y hacer un btn para cargar peliculas nuevas.
     <!-- -[ ] Listar todas las peliculas, que pueda editar data
     -[ ] Listar todas las actores, que pueda editar data
     -[ ] Listar todas las directores, que pueda editar data -->
@@ -36,19 +39,19 @@
 [ ] Like en las reviews, hay que hacer modulo en el back, y ordenar las reviews siempre por likes
 
 Mejoras que nso recomendo Alejo
-[ ] Baja Logica, agregar atr deleted at a todas las clases, y cambiar las querys.
-[ ] Normalizar la BD, que todas las entidades tengan createdAt, updatedAt
+[x] Baja Logica, agregar atr deleted at a todas las clases, y cambiar las querys.
+[x] Normalizar la BD, que todas las entidades tengan createdAt, updatedAt
 [ ] Usar transactions, en los metodos de los controller que usen mas de un DAO
 [ ] Separar la logica de express, con la de negocio, agregando la capa service, habria que tocar todo el codigo, es para kilombo.
 
-!Importante, pero no hace falta.
-[ ] Cambiar toda la logica del useApi, por funciones, usando la logica de nextjs, cache, revalidatePath, optimistic, y el loading
-[ ] Tirar revalidatePath despues de una review para que aparezca en la movie
-[ ] Metadata personalisada
-
-
+- Importantes
 [ ] hacer responsive toda la pagina
 [ ] Realizar al menos 1 test unitario de un componente.
 [ ] Realizar al menos 1 test de end-to-end.
 [ ] Variables de entorno** configuradas (.env dev/prod)
 [ ] README.md con instrucciones de instalación
+
+!Importante, pero no hace falta.
+[ ] Cambiar toda la logica del useApi, por funciones, usando la logica de nextjs, cache, revalidatePath, optimistic, y el loading
+[ ] Tirar revalidatePath despues de una review para que aparezca en la movie
+[ ] Metadata personalisada

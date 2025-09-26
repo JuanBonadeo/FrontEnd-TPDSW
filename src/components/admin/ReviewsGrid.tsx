@@ -2,36 +2,56 @@
 import { useApi } from '@/hooks/useApi';
 import { Review } from '@/lib/types.js';
 import { Trash } from 'lucide-react';
+import { useRouter } from 'next/navigation.js';
+import { useState, useEffect } from 'react';
 
 interface Props {
     reviews: Review[] | null;
 }
 
 export const ReviewsGrid = ({ reviews }: Props) => {
-
+    const router = useRouter();
+    const [localReviews, setLocalReviews] = useState<Review[]>();
+    const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null);
+    
+    useEffect(() => {
+        setLocalReviews(reviews || []);
+    }, [reviews]);
+    
+    // Hook para eliminar reviews - se ejecutará manualmente
+    const { execute, loading: deleteLoading } = useApi<any>(
+        deletingReviewId ? `reviews/${deletingReviewId}` : null,
+        {
+            method: 'DELETE',
+            requireAuth: true,
+            manual: true,
+        }
+    );
+    
     if (!reviews || reviews.length === 0) {
         return <p className="text-center text-gray-500">No reviews found.</p>;
     }
     
-    const HandleDeleteReview = async (reviewId: string) => {
-        const { execute } = useApi(`reviews/${reviewId}`, {
-            method: 'DELETE',
-            requireAuth: true,
-            manual: true,
-        });
-
+    const handleDeleteReview = async (reviewId: string) => {
+        setDeletingReviewId(reviewId);
+        
         try {
+            // Crear una instancia temporal del hook para esta eliminación específica
             await execute();
-            // Optionally, you can add logic to refresh the list or remove the deleted review from the UI
-            alert('Review deleted successfully');
             
+            // Actualizar el estado local para remover la review inmediatamente
+            setLocalReviews(prev => prev.filter(review => review.id_review.toString() !== reviewId));
+            
+            alert('Review deleted successfully');
+            router.refresh(); 
 
         } catch (error) {
             console.error('Error deleting review:', error);
+            alert('Error deleting review');
+        } finally {
+            setDeletingReviewId(null);
         }
     };
-
-
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('es-ES', {
@@ -55,9 +75,9 @@ export const ReviewsGrid = ({ reviews }: Props) => {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                    {reviews.map((review) => (
+                    {localReviews.map((review) => (
                         <tr key={review.id_review} className="">
-                            <td className="px-6 py-">
+                            <td className="px-6 py-4">
                                 {review.User.name}
                             </td>
                             <td className="px-6 py-4">
@@ -80,11 +100,12 @@ export const ReviewsGrid = ({ reviews }: Props) => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button
-                                    onClick={() => HandleDeleteReview(review.id_review.toString())}
-                                    className="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                    onClick={() => handleDeleteReview(review.id_review.toString())}
+                                    disabled={deletingReviewId === review.id_review.toString()}
+                                    className="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <Trash className="w-4 h-4" />
-                                    Eliminar
+                                    {deletingReviewId === review.id_review.toString() ? 'Eliminando...' : 'Eliminar'}
                                 </button>
                             </td>
                         </tr>

@@ -91,7 +91,7 @@ export function ProfileHeader({ user }: Props) {
                 <>
                   <div className="border-t border-border mx-2 my-1"></div>
                   <Link
-                    href="/admin"
+                    href="/admin/users"
                     className="flex items-center gap-3 px-4 py-3 hover:opacity-70 transition-colors text-sm"
                     onClick={() => setShowSettingsMenu(false)}
               >
