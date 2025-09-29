@@ -12,8 +12,7 @@ interface UpdateUserRoleResult {
   error?: string;
   code?: string;
 }
-// Versión alternativa si prefieres manejar el token desde localStorage en el cliente
-// y pasarlo como parámetro
+
 export async function updateUserRoleWithToken(
   userId: string,
   token: string,

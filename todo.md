@@ -27,7 +27,7 @@
 
 [ ] ADMIN PANEL: hay que hacerlo todo, agregaria una opcion en las settings, para ir al panel
     -[x] Listar todos los usuarios, y 
-    -[ ] que pueda cambiar rol de usuarios, con un select
+    -[x] que pueda cambiar rol de usuarios, con un select
     -[x] Listar todas las reviews, 
     -[x] que pueda eliminar
     -[ ] Listar Peliculas, que se puedan editar, y hacer un btn para cargar peliculas nuevas.

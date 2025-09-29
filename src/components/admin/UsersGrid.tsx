@@ -1,6 +1,6 @@
 "use client";
 import { useApi } from "@/hooks/useApi";
-import { updateUserRoleWithToken } from "@/lib/actions/reviews";
+import { updateUserRoleWithToken } from "@/lib/actions/updateUserRoleWithToken";
 import { User } from "@/lib/types";
 import { useEffect, useState } from "react";
 
