@@ -145,7 +145,7 @@ export default function FetchMoviesButton() {
                 {!loading && !success && !error && (
                     <div className="text-center py-12 text-gray-500">
                         <Download className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                        <p>Haz clic en "Cargar Películas" para importar desde TMDB</p>
+                        <p>Haz clic en Cargar Películas para importar desde TMDB</p>
                     </div>
                 )}
             </div>

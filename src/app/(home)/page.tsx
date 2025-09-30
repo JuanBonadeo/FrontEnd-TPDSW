@@ -8,8 +8,15 @@ import MoviesGridServer from "./MoviesGridServer";
 import CarrouselServer from "./CarrouselServer";
 import { CarruselSkeleton } from "@/components/ui/Carrusel/CarruselSkeleton";
 
-export default function Page({ searchParams }: { searchParams?: { page?: string } }) {
-  const page = Number(searchParams?.page ?? "1") || 1;
+interface SearchParams {
+  page?: string;
+}
+interface Props {
+  searchParams: Promise<SearchParams>;
+}
+export default async function Page({ searchParams }: Props) {
+  const { page } = await searchParams;
+  const pageInt = Number(page ?? "1") || 1;
 
   return (
     <>
@@ -23,7 +30,7 @@ export default function Page({ searchParams }: { searchParams?: { page?: string 
       </Suspense>
       
       <Suspense fallback={<MoviesGridSkeleton />}>
-        <MoviesGridWithPagination page={page} limit={30} />
+        <MoviesGridWithPagination page={pageInt} limit={30} />
       </Suspense>
     </>
   );

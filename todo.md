@@ -25,20 +25,16 @@
     -[ ] que cuando se haga una review se modifique las props de la movie (score, y totalReviews)
     -[ ] permitir que el score de la review sea con coma
 
-[ ] ADMIN PANEL: hay que hacerlo todo, agregaria una opcion en las settings, para ir al panel
+[x] ADMIN PANEL: hay que hacerlo todo, agregaria una opcion en las settings, para ir al panel
     -[x] Listar todos los usuarios, y 
     -[x] que pueda cambiar rol de usuarios, con un select
     -[x] Listar todas las reviews, 
     -[x] que pueda eliminar
-    -[ ] Listar Peliculas, que se puedan editar, y hacer un btn para cargar peliculas nuevas.
-    <!-- -[ ] Listar todas las peliculas, que pueda editar data
-    -[ ] Listar todas las actores, que pueda editar data
-    -[ ] Listar todas las directores, que pueda editar data -->
-    <!-- NO SE SI HACE FALTA -->
+    -[x] Listar Peliculas, que se puedan editar, y hacer un btn para cargar peliculas nuevas.
 
 [ ] Like en las reviews, hay que hacer modulo en el back, y ordenar las reviews siempre por likes
 
-Mejoras que nso recomendo Alejo
+Mejoras que nos recomendo Alejo
 [x] Baja Logica, agregar atr deleted at a todas las clases, y cambiar las querys.
 [x] Normalizar la BD, que todas las entidades tengan createdAt, updatedAt
 [ ] Usar transactions, en los metodos de los controller que usen mas de un DAO
