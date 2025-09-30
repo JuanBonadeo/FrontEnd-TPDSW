@@ -6,6 +6,7 @@ import { Favourite } from "@/lib/types";
 import { MovieFavouriteCard } from "@/components/movies/Card/MovieFavouriteCard";
 import MoviesGridSkeleton from "@/components/movies/Grid/MoviesGridSkeleton";
 import { Title } from "@/components/ui/title/Title";
+import Link from "next/link.js";
 
 export const FavouritesClient = () => {
   const {
@@ -20,12 +21,12 @@ export const FavouritesClient = () => {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-8">
       <div>Comienza marcando algunas peliculas como favoritas!</div>
-      <a
+      <Link
         href="/"
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
       >
         Home
-      </a>
+      </Link>
       </div>
     );
 
