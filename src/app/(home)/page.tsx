@@ -23,7 +23,7 @@ export default async function Page({ searchParams }: Props) {
       <Banner />
       <Suspense fallback={<CarruselSkeleton />}>
         <CarrouselServer
-          ids={[189, 303, 255, 21, 68]}
+          ids={[175, 293, 244, 67, 34]}
           title="Películas en Tendencia"
           autoPlayMs={5000}
         />

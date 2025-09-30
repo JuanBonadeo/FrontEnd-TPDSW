@@ -4,14 +4,21 @@ import { Download, Loader2, Check, AlertCircle } from 'lucide-react';
 import Link from 'next/link.js';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
-const token = localStorage.getItem('token');
+
 
 export default function FetchMoviesButton() {
     const [loading, setLoading] = useState(false);
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [token, setToken] = useState<string | null>(null);
 
+    React.useEffect(() => {
+        if (typeof window !== "undefined") {
+            setToken(localStorage.getItem('token'));
+        }
+    }, []);
+    
     const handleFetchMovies = async () => {
         setLoading(true);
         setError(null);
@@ -44,7 +51,7 @@ export default function FetchMoviesButton() {
             setLoading(false);
         }
     };
-    
+
 
     return (
         <div className="w-full max-w-2xl mx-auto p-6">

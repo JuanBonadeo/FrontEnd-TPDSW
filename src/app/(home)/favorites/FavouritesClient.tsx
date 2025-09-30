@@ -17,7 +17,17 @@ export const FavouritesClient = () => {
   if (loading) return <MoviesGridSkeleton />;
   if (error) return <div>Error loading favourites detail: {error}</div>;
   if (!favourites || favourites.length === 0)
-    return <div>No favourites data found</div>;
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-8">
+      <div>Comienza marcando algunas peliculas como favoritas!</div>
+      <a
+        href="/"
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+      >
+        Home
+      </a>
+      </div>
+    );
 
   return (
     <>
