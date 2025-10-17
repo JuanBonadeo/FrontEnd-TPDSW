@@ -5,6 +5,7 @@ import { Hand, X, Star, Send } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
 import { useAuthContext } from "@/context/AuthContext";
 import Link from "next/link.js";
+import { revalidatePath } from "next/cache.js";
 
 
 
@@ -76,6 +77,7 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
   const handleSubmit = async () => {
     if (!canSubmit) return;
     await execute?.();
+    revalidatePath(`/movies/${idMovie}`)
   };
 
   const handleStarClick = (rating: number) => {
