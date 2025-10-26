@@ -17,6 +17,7 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
   const { isAuthenticated } = useAuthContext();
   const [open, setOpen] = useState(false);
   const [score, setScore] = useState<number>(5);
+  const [scoreInput, setScoreInput] = useState<string>(String(5));
   const [content, setContent] = useState<string>("");
   const [hoveredStar, setHoveredStar] = useState<number>(0);
 
@@ -76,16 +77,35 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
-    const success = await execute?.();
-    if (success) {
-      // Revalidate both the movie page and the reviews section
-      revalidatePath(`/movies/${idMovie}`);
-      revalidatePath(`/reviews/movie/${idMovie}`);
-    }
+    await execute?.();
+    // Revalidate both the movie page and the reviews section
+    // (we revalidate unconditionally after the request completes)
+    revalidatePath(`/movies/${idMovie}`);
+    revalidatePath(`/reviews/movie/${idMovie}`);
   };
 
   const handleStarClick = (rating: number) => {
     setScore(rating);
+    // keep the input in sync (show integer when clicking stars)
+    setScoreInput(String(rating));
+  };
+
+  const handleScoreInputChange = (value: string) => {
+    // accept comma as decimal separator
+    setScoreInput(value);
+    const normalized = value.replace(/,/g, ".");
+    const parsed = parseFloat(normalized);
+    if (!Number.isNaN(parsed)) {
+      // clamp between 1 and 5
+      const clamped = Math.max(1, Math.min(5, parsed));
+      setScore(clamped);
+    }
+  };
+
+  const handleScoreInputBlur = () => {
+    // normalize on blur: format with comma and clamp
+    const normalized = score.toString().replace(/\./g, ",");
+    setScoreInput(normalized);
   };
 
   const getRatingText = (rating: number) => {
@@ -184,13 +204,27 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
 
                 <div className="flex items-center gap-3">
                   <span className={`font-bold text-lg ${getRatingColor(score)}`}>
-                    {score}/5
+                    {scoreInput.replace(".", ",")}/5
                   </span>
                   <span className="text-gray-400">•</span>
                   <span className={`font-medium ${getRatingColor(score)}`}>
                     {getRatingText(score)}
                   </span>
                 </div>
+              </div>
+
+              {/* Input para permitir coma como separador decimal */}
+              <div className="mt-2">
+                <label className="text-sm text-gray-400 mr-2">Puntaje:</label>
+                <input
+                  aria-label="Puntaje"
+                  value={scoreInput}
+                  onChange={(e) => handleScoreInputChange(e.target.value)}
+                  onBlur={handleScoreInputBlur}
+                  className="w-20 inline-block text-center bg border border-gray-700 rounded px-2 py-1 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+                  placeholder="5"
+                />
+                <span className="ml-2 text-xs text-gray-400">(usa coma para decimales, ej. 3,5)</span>
               </div>
 
               {/* Textarea */}
