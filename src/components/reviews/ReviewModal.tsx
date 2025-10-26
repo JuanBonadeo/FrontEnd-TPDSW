@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Hand, X, Star, Send } from "lucide-react";
-import { useApi } from "@/hooks/useApi";
 import { useAuthContext } from "@/context/AuthContext";
+import { createReview } from "@/actions/reviewActions";
 import Link from "next/link.js";
 import { revalidatePath } from "next/cache.js";
 
@@ -14,7 +14,7 @@ interface ReviewModalProps {
 }
 
 export default function ReviewModal({ idMovie }: ReviewModalProps) {
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated, token } = useAuthContext();
   const [open, setOpen] = useState(false);
   const [score, setScore] = useState<number>(5);
   const [scoreInput, setScoreInput] = useState<string>(String(5));
@@ -30,11 +30,9 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     [idMovie, score, content]
   );
 
-  const { data: created, loading, error, execute } = useApi("/reviews", {
-    method: "POST",
-    requireAuth: true,
-    body,
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [created, setCreated] = useState(false);
 
   useEffect(() => {
     if (created && open) {
@@ -77,11 +75,19 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
-    await execute?.();
-    // Revalidate both the movie page and the reviews section
-    // (we revalidate unconditionally after the request completes)
-    revalidatePath(`/movies/${idMovie}`);
-    revalidatePath(`/reviews/movie/${idMovie}`);
+    setLoading(true);
+    setError(null);
+    try {
+      await createReview({ id_movie: idMovie, score, comment: content.trim(), token });
+      setCreated(true);
+      // Revalidate both the movie page and the reviews section
+      revalidatePath(`/movies/${idMovie}`);
+      revalidatePath(`/reviews/movie/${idMovie}`);
+    } catch (err: any) {
+      setError(err?.message ?? String(err));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleStarClick = (rating: number) => {
