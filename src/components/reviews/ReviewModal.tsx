@@ -76,8 +76,12 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
-    await execute?.();
-    revalidatePath(`/movies/${idMovie}`)
+    const success = await execute?.();
+    if (success) {
+      // Revalidate both the movie page and the reviews section
+      revalidatePath(`/movies/${idMovie}`);
+      revalidatePath(`/reviews/movie/${idMovie}`);
+    }
   };
 
   const handleStarClick = (rating: number) => {

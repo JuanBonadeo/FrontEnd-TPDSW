@@ -22,7 +22,7 @@
 
 (Alpaca)
 [ ] Review hay que tocar Backend:
-    -[ ] que cuando se haga una review se modifique las props de la movie (score, y totalReviews)
+    -[x] que cuando se haga una review se modifique las props de la movie (score, y totalReviews)
     -[ ] permitir que el score de la review sea con coma
     
 [ ] Responsive
