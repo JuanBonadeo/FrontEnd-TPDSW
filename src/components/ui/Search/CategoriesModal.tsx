@@ -17,6 +17,9 @@ export const CategoriesModal = ({ currentCategoryId }: Props) => {
   const { data: categories, loading, error } = useApi<Category[]>("/categories");
   const searchParams = useSearchParams();
 
+  const currentCategory = categories?.find((c) => c.id_category.toString() === currentCategoryId);
+  const currentCategoryName = currentCategory?.name ?? null;
+
   const createCategoryUrl = (categoryId: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("categoryId", categoryId);
@@ -33,24 +36,32 @@ export const CategoriesModal = ({ currentCategoryId }: Props) => {
 
   return (
     <>
-      {/* Botón para abrir */}
+      {/* Botón para abrir (muestra la categoría actual si existe) */}
       <button
         onClick={() => setOpen(true)}
         className="xs:w-xs flex items-center justify-center  group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
       >
         <Filter className="w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600" />
-        <span className="text-xs">Categorias</span>
+        <span className="text-xs">{currentCategoryName ? `Categorias: ${currentCategoryName}` : "Categorias"}</span>
         <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
       </button>
 
       {/* Overlay */}
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          {/* Modal */}
-          <div className="relative bg-background rounded-xl shadow-lg w-[90%] max-w-3xl p-6 animate-in fade-in zoom-in-95">
+        // Overlay: bottom-aligned on mobile, centered on sm+
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm">
+          {/* Modal: full width bottom-sheet on mobile, centered dialog on larger screens */}
+          <div className="relative bg-background rounded-t-xl sm:rounded-xl shadow-lg w-full sm:w-[90%] max-w-none sm:max-w-3xl p-4 sm:p-6 animate-in fade-in zoom-in-95 h-[60vh] sm:h-auto">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Selecciona una categoría</h2>
+              <div className="flex flex-col">
+                <h2 className="text-xl font-semibold">Selecciona una categoría</h2>
+                {currentCategoryName ? (
+                  <span className="mt-1 text-sm text-muted-foreground">Buscando por: <strong className="text-white">{currentCategoryName}</strong></span>
+                ) : (
+                  <span className="mt-1 text-sm text-muted-foreground">Buscando por: <strong className="text-white">Todas</strong></span>
+                )}
+              </div>
               <button
                 onClick={() => setOpen(false)}
                 className="text-muted-foreground hover:text-foreground transition cursor-pointer"
