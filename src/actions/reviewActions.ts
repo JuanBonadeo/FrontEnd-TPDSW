@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 type CreateReviewPayload = {
   id_movie: string;
   score: number;
@@ -25,5 +27,16 @@ export async function createReview({ id_movie, score, comment, token }: CreateRe
     throw new Error(text || `Error ${res.status}`);
   }
 
-  return res.json();
+  const data = await res.json();
+
+  // Revalidate server-side paths so the movie page and reviews list are up-to-date
+  try {
+    revalidatePath(`/movies/${id_movie}`);
+    revalidatePath(`/reviews/movie/${id_movie}`);
+  } catch (e) {
+    // don't fail the request if revalidation throws
+    console.error('revalidatePath failed', e);
+  }
+
+  return data;
 }

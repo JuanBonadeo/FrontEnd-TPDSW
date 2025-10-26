@@ -80,9 +80,7 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     try {
       await createReview({ id_movie: idMovie, score, comment: content.trim(), token });
       setCreated(true);
-      // Revalidate both the movie page and the reviews section
-      revalidatePath(`/movies/${idMovie}`);
-      revalidatePath(`/reviews/movie/${idMovie}`);
+      // Server Action performs revalidation server-side; no client revalidate needed here
     } catch (err: any) {
       setError(err?.message ?? String(err));
     } finally {
