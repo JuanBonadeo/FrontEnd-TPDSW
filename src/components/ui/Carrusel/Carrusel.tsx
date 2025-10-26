@@ -1,7 +1,7 @@
 // components/ui/Carrusel/CarruselClient.tsx
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
@@ -23,12 +23,21 @@ export function Carrusel({ movies, title = "Películas en Tendencia", autoPlayMs
   const wrap = useCallback((i: number) => (len ? (i + len) % len : 0), [len]);
   const next = useCallback(() => setCurrent((p) => wrap(p + 1)), [wrap]);
   const prev = useCallback(() => setCurrent((p) => wrap(p - 1)), [wrap]);
+  const [isTouch, setIsTouch] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const touchThreshold = 50; // px
 
   useEffect(() => {
     if (!autoPlayMs || len <= 1) return;
     const id = setInterval(next, autoPlayMs);
     return () => clearInterval(id);
   }, [autoPlayMs, next, len]);
+  
+  useEffect(() => {
+    // detect touch support to hide arrows on touch devices
+    const hasTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    setIsTouch(Boolean(hasTouch));
+  }, []);
 
   if (len === 0) {
     return (
@@ -55,22 +64,50 @@ export function Carrusel({ movies, title = "Películas en Tendencia", autoPlayMs
 
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent pointer-events-none" />
 
-          <button
-            type="button"
-            onClick={prev}
-            aria-label="Película anterior"
-            className="cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50 z-20"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          <button
-            type="button"
-            onClick={next}
-            aria-label="Siguiente película"
-            className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50 z-20"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
+        <div
+          className="relative h-110"
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches?.[0]?.clientX ?? null;
+          }}
+          onTouchMove={(e) => {
+            // prevent accidental text selection etc; we don't block default scrolling
+          }}
+          onTouchEnd={(e) => {
+            const endX = e.changedTouches?.[0]?.clientX ?? null;
+            if (touchStartX.current === null || endX === null) return;
+            const delta = endX - touchStartX.current;
+            if (Math.abs(delta) > touchThreshold) {
+              if (delta < 0) {
+                // swipe left -> next
+                next();
+              } else {
+                // swipe right -> prev
+                prev();
+              }
+            }
+            touchStartX.current = null;
+          }}
+        >
+          {!isTouch && (
+            <>
+              <button
+                type="button"
+                onClick={prev}
+                aria-label="Película anterior"
+                className="cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50 z-20"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                type="button"
+                onClick={next}
+                aria-label="Siguiente película"
+                className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50 z-20"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            </>
+          )}
 
           <div className="absolute bottom-4 left-4 right-4 pointer-events-none z-20">
             <div className="flex items-end justify-between">
