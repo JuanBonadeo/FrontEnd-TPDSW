@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 type CreateReviewPayload = {
   id_movie: string;
@@ -29,13 +29,16 @@ export async function createReview({ id_movie, score, comment, token }: CreateRe
 
   const data = await res.json();
 
-  // Revalidate server-side paths so the movie page and reviews list are up-to-date
+  // Attempt to revalidate the cached movie page and review-related cache tags
+  // We revalidate by tag to force Next to refresh any cached fetches that used the same tag.
   try {
-    revalidatePath(`/movies/${id_movie}`);
-    revalidatePath(`/reviews/movie/${id_movie}`);
+    // Tag names must match those used when fetching the movie page.
+    revalidateTag(`movie-${id_movie}`);
+    // If you use a tag for reviews lists, revalidate it too (common pattern)
+    revalidateTag(`reviews-movie-${id_movie}`);
   } catch (e) {
-    // don't fail the request if revalidation throws
-    console.error('revalidatePath failed', e);
+    // Log non-fatal revalidation errors server-side for diagnostics
+    console.error('revalidateTag failed after creating review for', id_movie, e);
   }
 
   return data;

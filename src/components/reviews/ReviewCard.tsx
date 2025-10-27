@@ -1,22 +1,32 @@
 
+"use client"
 
-
+import { useMemo } from 'react'
 import { getAvatarUrl } from '@/app/(home)/profile/edit/EditProfileClient'
 import { Review } from '@/lib/types.js'
 import { Star } from 'lucide-react'
 import Image from 'next/image.js'
-import React from 'react'
 
 interface Props {
     review: Review
 }
 
 export const ReviewCard = ({ review }: Props) => {
-    const dateFormated = new Date(review.review_date).toLocaleDateString("es-ES", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    })
+    // Format date on the client using the user's locale to avoid server/client locale mismatch
+    const dateFormated = useMemo(() => {
+        try {
+            const locale = typeof navigator !== 'undefined' ? navigator.language : 'es-ES'
+            return new Intl.DateTimeFormat(locale, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }).format(new Date(review.review_date))
+        } catch (e) {
+            // Fallback to a simple ISO date if Intl is not available
+            return new Date(review.review_date).toISOString().split('T')[0]
+        }
+    }, [review.review_date])
+
     return (
         <div key={review.id_review} className="overflow-hidden bg p-4 rounded-xl ">
             <div className="flex items-start gap-3">

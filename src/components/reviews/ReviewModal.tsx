@@ -5,7 +5,6 @@ import { Hand, X, Star, Send } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext";
 import { createReview } from "@/actions/reviewActions";
 import Link from "next/link.js";
-import { revalidatePath } from "next/cache.js";
 
 
 
@@ -81,6 +80,14 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
       await createReview({ id_movie: idMovie, score, comment: content.trim(), token });
       setCreated(true);
       // Server Action performs revalidation server-side; no client revalidate needed here
+      // Notify any client listeners (e.g. review lists) so they can refresh immediately
+      if (typeof window !== 'undefined') {
+        try {
+          window.dispatchEvent(new CustomEvent('review-created', { detail: { idMovie } }));
+        } catch (e) {
+          // ignore
+        }
+      }
     } catch (err: any) {
       setError(err?.message ?? String(err));
     } finally {
@@ -211,7 +218,7 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
                     {scoreInput.replace(".", ",")}/5
                   </span>
                   <span className="text-gray-400">•</span>
-                  <span className={`font-medium ${getRatingColor(score)}`}>
+                  <span className={`font-medium ${getRatingColor(score)}`}> 
                     {getRatingText(score)}
                   </span>
                 </div>

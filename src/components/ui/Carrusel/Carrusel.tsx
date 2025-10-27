@@ -32,7 +32,7 @@ export function Carrusel({ movies, title = "Películas en Tendencia", autoPlayMs
     const id = setInterval(next, autoPlayMs);
     return () => clearInterval(id);
   }, [autoPlayMs, next, len]);
-  
+
   useEffect(() => {
     // detect touch support to hide arrows on touch devices
     const hasTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -64,86 +64,88 @@ export function Carrusel({ movies, title = "Películas en Tendencia", autoPlayMs
 
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent pointer-events-none" />
 
-        <div
-          className="relative h-110"
-          onTouchStart={(e) => {
-            touchStartX.current = e.touches?.[0]?.clientX ?? null;
-          }}
-          onTouchMove={(e) => {
-            // prevent accidental text selection etc; we don't block default scrolling
-          }}
-          onTouchEnd={(e) => {
-            const endX = e.changedTouches?.[0]?.clientX ?? null;
-            if (touchStartX.current === null || endX === null) return;
-            const delta = endX - touchStartX.current;
-            if (Math.abs(delta) > touchThreshold) {
-              if (delta < 0) {
-                // swipe left -> next
-                next();
-              } else {
-                // swipe right -> prev
-                prev();
+          <div
+            className="relative h-110"
+            onTouchStart={(e) => {
+              touchStartX.current = e.touches?.[0]?.clientX ?? null;
+            }}
+            onTouchMove={(e) => {
+              // prevent accidental text selection etc; we don't block default scrolling
+            }}
+            onTouchEnd={(e) => {
+              const endX = e.changedTouches?.[0]?.clientX ?? null;
+              if (touchStartX.current === null || endX === null) return;
+              const delta = endX - touchStartX.current;
+              if (Math.abs(delta) > touchThreshold) {
+                if (delta < 0) {
+                  // swipe left -> next
+                  next();
+                } else {
+                  // swipe right -> prev
+                  prev();
+                }
               }
-            }
-            touchStartX.current = null;
-          }}
-        >
-          {!isTouch && (
-            <>
-              <button
-                type="button"
-                onClick={prev}
-                aria-label="Película anterior"
-                className="cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50 z-20"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-              <button
-                type="button"
-                onClick={next}
-                aria-label="Siguiente película"
-                className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50 z-20"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            </>
-          )}
+              touchStartX.current = null;
+            }}
+          >
+            {!isTouch && (
+              <>
+                <button
+                  type="button"
+                  onClick={prev}
+                  aria-label="Película anterior"
+                  className="cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50 z-20"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </button>
+                <button
+                  type="button"
+                  onClick={next}
+                  aria-label="Siguiente película"
+                  className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50 z-20"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </button>
+              </>
+            )}
 
-          <div className="absolute bottom-4 left-4 right-4 pointer-events-none z-20">
-            <div className="flex items-end justify-between">
-              <div>
-                <h4 className="mb-2 line-clamp-2 text-xl font-bold text-white drop-shadow-lg">{m.title}</h4>
-                <div className="mb-2 flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 text-red-600" fill="red" />
-                    <span className="text-sm font-medium text-white">
-                      {m.rating?.toFixed?.(1) ?? m.rating}
-                    </span>
+            <div className="absolute bottom-4 left-4 right-4 pointer-events-none z-20">
+              <div className="flex items-end justify-between">
+                <div>
+                  <h4 className="mb-2 line-clamp-2 text-xl font-bold text-white drop-shadow-lg">{m.title}</h4>
+                  <div className="mb-2 flex items-center gap-3">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 text-red-600" fill="red" />
+                      <span className="text-sm font-medium text-white">
+                        {m.rating?.toFixed?.(1) ?? m.rating}
+                      </span>
+                    </div>
+                    {year && <span className="text-sm text-gray-300">{year}</span>}
                   </div>
-                  {year && <span className="text-sm text-gray-300">{year}</span>}
                 </div>
-              </div>
-              <div className="rounded bg-black/30 px-2 py-1 text-xs text-gray-300 backdrop-blur-sm">
-                {current + 1} / {len}
+                <div className="rounded bg-black/30 px-2 py-1 text-xs text-gray-300 backdrop-blur-sm">
+                  {current + 1} / {len}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="mt-4 flex justify-center gap-2">
-        {movies.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            aria-label={`Ir a película ${i + 1}`}
-            className={
-              "h-2 rounded-full transition-all duration-200 hover:scale-125 " +
-              (i === current ? "w-6 bg-red-500" : "w-2 bg-gray-600 hover:bg-gray-500")
-            }
-          />
-        ))}
+        <div className="mt-4 flex justify-center gap-2">
+          {movies.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              aria-label={`Ir a película ${i + 1}`}
+              className={
+                "h-2 rounded-full transition-all duration-200 hover:scale-125 " +
+                (i === current ? "w-6 bg-red-500" : "w-2 bg-gray-600 hover:bg-gray-500")
+              }
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
 }
+

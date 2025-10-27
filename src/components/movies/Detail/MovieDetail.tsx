@@ -6,7 +6,6 @@ import Link from "next/link"
 import { Movie } from "@/lib/types.js"
 import { FavouriteButton } from '../FavouriteButton/FavouriteButton';
 import { ToWatchButton } from "../ToWatchButton/ToWatchButton"
-import { useAuthContext } from "@/context/AuthContext"
 import ReviewModal from "@/components/reviews/ReviewModal"
 import clsx from "clsx"
 
@@ -15,7 +14,6 @@ interface Props {
 }
 
 export function MovieDetail({ movie }: Props) {
-  const { user } = useAuthContext();
   return (
     <div className="space-y-6">
       {/* Imagen de fondo */}

@@ -6,7 +6,12 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 async function fetchMovieById(id: string): Promise<Movie> {
   const res = await fetch(`${API_BASE}/movies/${id}`, {
-    next: { revalidate: 60 * 60 * 24 * 7 }, // cache 7 días
+    // Use cache tags so we can trigger targeted revalidation from server actions
+    next: {
+      revalidate: 60 * 60 * 24 * 7, // cache 7 días
+      // tag the movie page by id so revalidateTag(`movie-${id}`) will invalidate it
+      tags: [`movie-${id}`],
+    },
   });
   if (!res.ok) {
     if (res.status === 404) throw new Error("NOT_FOUND");
