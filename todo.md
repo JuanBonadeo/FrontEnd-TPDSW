@@ -34,7 +34,7 @@
 -[x] Tirar revalidatePath despues de una review para que aparezca en la movie
 -[ ] Poner logo de favicon.
 -[ ] Metadata personalizada
--[ ] esconder bibgrafia si es muy larga
+-[x] esconder bibgrafia si es muy larga
 -[x] Moviespage: Hacer una pagina que muestre solamente el grid, con el pagination.
 
 

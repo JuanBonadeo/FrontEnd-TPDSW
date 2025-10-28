@@ -27,7 +27,7 @@ export default function ReviewSectionClient({ id }: { id: string }) {
 
     window.addEventListener('review-created', onReviewCreated as EventListener);
     return () => window.removeEventListener('review-created', onReviewCreated as EventListener);
-  }, [id]);
+  }, [id, execute]);
 
   if ( errorCode === "NOT_FOUND") return notFound()
   if (loading) return <ReviewSectionSkeleton />;
