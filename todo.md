@@ -35,7 +35,7 @@
 -[ ] Poner logo de favicon.
 -[ ] Metadata personalizada
 -[ ] esconder bibgrafia si es muy larga
--[ ] Moviespage: Hacer una pagina que muestre solamente el grid, con el pagination.
+-[x] Moviespage: Hacer una pagina que muestre solamente el grid, con el pagination.
 
 
 - Importantes
