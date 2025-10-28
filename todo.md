@@ -21,17 +21,17 @@
 
 
 (Alpaca)
-[ ] Review hay que tocar Backend:
+[x] Review hay que tocar Backend:
     -[x] que cuando se haga una review se modifique las props de la movie (score, y totalReviews)
-    -[ ] permitir que el score de la review sea con coma
+    -[x] permitir que el score de la review sea con coma
     
-[ ] Responsive
-    -[ ]  carrusel, cuando deslizas que cambie de peli, y ocultaria las flechas
-    -[ ] responsive del modal de las categorias, y que indique por que categoria estas buscando
+[x] Responsive
+    -[x]  carrusel, cuando deslizas que cambie de peli, y ocultaria las flechas
+    -[x] responsive del modal de las categorias, y que indique por que categoria estas buscando
 
 (ZALO)
--[ ] Usar Server-Actions en Actors, directors, reviews(sin cache)
--[ ] Tirar revalidatePath despues de una review para que aparezca en la movie
+-[x] Usar Server-Actions en Actors, directors, reviews(sin cache)
+-[x] Tirar revalidatePath despues de una review para que aparezca en la movie
 -[ ] Poner logo de favicon.
 -[ ] Metadata personalizada
 -[ ] esconder bibgrafia si es muy larga
