@@ -44,6 +44,8 @@
 [x] README.md con instrucciones de instalación
 
 
+-BUGS-
+[] Cuando se saca una pelicula de la Watchlist/Favourites no se actualiza en el profileTab.
 
 
 
