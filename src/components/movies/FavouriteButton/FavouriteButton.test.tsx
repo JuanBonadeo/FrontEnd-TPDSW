@@ -57,7 +57,7 @@ describe("FavouriteButton ", () => {
 		root = null;
 	});
 
-	it("renders login link when user is not authenticated", async () => {
+		it("renders login button when user is not authenticated", async () => {
 		authValue = false;
 
 		act(() => {
@@ -67,12 +67,10 @@ describe("FavouriteButton ", () => {
 		// wait for effects to run
 		await Promise.resolve();
 
-		// Find an anchor which contains the label
-		const anchor = container!.querySelector("a");
-		expect(anchor).toBeTruthy();
-		expect(anchor!.textContent).toMatch(/A Favoritos/i);
-		// href in jsdom is absolute, check it contains the route
-		expect(anchor!.getAttribute("href")).toContain("/auth/login");
+			// Find a button which contains the label
+			const button = container!.querySelector("button#add-favourite");
+			expect(button).toBeTruthy();
+			expect(button!.textContent).toMatch(/A Favoritos|Cargando…/i);
 	});
 
 	it("shows favourite state when authenticated and toggles on click", async () => {

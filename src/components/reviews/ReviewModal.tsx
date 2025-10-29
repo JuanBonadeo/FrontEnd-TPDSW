@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Hand, X, Star, Send } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext";
 import { createReview } from "@/actions/reviewActions";
-import Link from "next/link.js";
+import { useRouter } from "next/navigation";
 
 
 
@@ -14,6 +14,8 @@ interface ReviewModalProps {
 
 export default function ReviewModal({ idMovie }: ReviewModalProps) {
   const { isAuthenticated, token } = useAuthContext();
+  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [score, setScore] = useState<number>(5);
   const [scoreInput, setScoreInput] = useState<string>(String(5));
@@ -40,6 +42,10 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
       setContent("");
     }
   }, [created, open]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -139,19 +145,19 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
     return "text-green-400";
   };
 
-  if (!isAuthenticated) return (
-    <Link href="/auth/login" className={"flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800  py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"}>
-      <Hand className={"w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600"} />
-      <span className="text-xs">Reseña</span>
-      <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
-    </Link>
-  );
   return (
     <>
       {/* Trigger Button - Mejorado */}
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          if (!mounted) return;
+          if (!isAuthenticated) {
+            router.push("/auth/login");
+            return;
+          }
+          setOpen(true);
+        }}
         className="flex items-center justify-center  group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
       >
           <Hand className="w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600" />
