@@ -41,7 +41,7 @@ export function FavouriteButton({ idMovie }: Props) {
   if (!isAuthenticated) return (
     <Link href="/auth/login" className={"flex items-center justify-center group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800  py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"}>
       <Heart className={"w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600"} />
-      <span className="text-xs">No Favorita</span>
+      <span className="text-xs">A Favoritos</span>
       <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
     </Link>
   );
@@ -70,7 +70,7 @@ export function FavouriteButton({ idMovie }: Props) {
         className={"w-4 h-4 md:w-5 md:h-5 mr-2  group-hover:rotate-360 transition-transform duration-600"}
         fill={isFavouriteState ? "white" : "transparent"}
       />
-      <span className="text-xs">{loading ? "Cargando…" : isFavouriteState ? "En favoritos" : "A Favoritos"}</span>
+      <span className="text-xs">{loading ? "Cargando…" : isFavouriteState ? "En Favoritos" : "A Favoritos"}</span>
       <div className="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-600"></div>
     </button>
   );
