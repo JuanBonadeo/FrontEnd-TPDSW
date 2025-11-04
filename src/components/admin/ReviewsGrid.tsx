@@ -11,43 +11,81 @@ interface Props {
 
 export const ReviewsGrid = ({ reviews }: Props) => {
     const router = useRouter();
-    const [localReviews, setLocalReviews] = useState<Review[]>();
+    const [localReviews, setLocalReviews] = useState<Review[]>([]);
     const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null);
     
     useEffect(() => {
         setLocalReviews(reviews || []);
     }, [reviews]);
     
-    // Hook para eliminar reviews - se ejecutará manualmente
-    const { execute, loading: deleteLoading } = useApi(
-        deletingReviewId ? `reviews/${deletingReviewId}` : null,
-        {
-            method: 'DELETE',
-            requireAuth: true,
-            manual: true,
+    // Función para eliminar review usando fetch directamente
+    const deleteReview = async (reviewId: string) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token de autenticación requerido');
         }
-    );
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/reviews/${reviewId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        // Verificar si la respuesta está vacía (común en DELETE requests)
+        const contentType = response.headers.get('content-type');
+        let result = null;
+
+        if (contentType && contentType.includes('application/json')) {
+            const text = await response.text();
+            if (text.trim()) {
+                try {
+                    result = JSON.parse(text);
+                } catch (e) {
+                    console.error('Error parsing JSON:', text);
+                    throw new Error('Respuesta del servidor no es JSON válido');
+                }
+            }
+        }
+
+        // Para DELETE requests, un 204 (No Content) o 200 sin contenido es válido
+        if (!response.ok) {
+            const errorMessage = result?.message || `Error ${response.status}: ${response.statusText}`;
+            throw new Error(errorMessage);
+        }
+
+        // Si hay contenido JSON, verificar el campo success
+        if (result && result.success === false) {
+            throw new Error(result.message || 'Error en el servidor');
+        }
+
+        return result || { success: true };
+    };
     
     if (!reviews || reviews.length === 0) {
         return <p className="text-center text-gray-500">No reviews found.</p>;
     }
     
     const handleDeleteReview = async (reviewId: string) => {
+        if (!window.confirm('¿Estás seguro de que quieres eliminar esta review?')) {
+            return;
+        }
+
         setDeletingReviewId(reviewId);
         
         try {
-            // Crear una instancia temporal del hook para esta eliminación específica
-            await execute();
+            // Ejecutar la eliminación
+            await deleteReview(reviewId);
             
             // Actualizar el estado local para remover la review inmediatamente
             setLocalReviews(prev => prev.filter(review => review.id_review.toString() !== reviewId));
-            
-            alert('Review deleted successfully');
-            router.refresh(); 
-
+            alert('Review eliminada exitosamente');
+            router.refresh();
         } catch (error) {
             console.error('Error deleting review:', error);
-            alert('Error deleting review');
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            alert(`Error al eliminar la review: ${errorMessage}`);
         } finally {
             setDeletingReviewId(null);
         }

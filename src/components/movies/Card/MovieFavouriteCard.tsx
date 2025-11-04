@@ -1,19 +1,59 @@
 import { getImageUrl } from "@/utils/getImageUrl";
-import {  Heart, Star } from "lucide-react";
+import {  Heart, Star, X } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Favourite } from "@/lib/types";
 
 interface Props {
-    favourite: Favourite
+    favourite: Favourite;
+    onRemove?: (movieId: number) => void;
 }
 
 
-export const MovieFavouriteCard = ({ favourite}: Props) => {
+export const MovieFavouriteCard = ({ favourite, onRemove }: Props) => {
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  const handleRemove = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isRemoving) return;
+    
+    setIsRemoving(true);
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/favourites/toggle`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ id_movie: favourite.id_movie }),
+        }
+      );
+
+      if (!response.ok) throw new Error('Error removing from favorites');
+
+      // Llamar al callback para actualizar la UI
+      if (onRemove) {
+        onRemove(favourite.id_movie);
+      }
+    } catch (error) {
+      console.error('Error removing from favorites:', error);
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
   return (
-    <Link key={favourite.id_movie} href={`/movies/${favourite.id_movie}`}>
-      <div className="relative group card-hover">
+    <div className="relative group card-hover">
+      <Link href={`/movies/${favourite.id_movie}`}>
         <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg">
           <Image
             src={
@@ -39,7 +79,19 @@ export const MovieFavouriteCard = ({ favourite}: Props) => {
             </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+      
+      {/* Botón de eliminar */}
+      {onRemove && (
+        <button
+          onClick={handleRemove}
+          disabled={isRemoving}
+          className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-50"
+          title="Eliminar de favoritos"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      )}
+    </div>
   );
 };

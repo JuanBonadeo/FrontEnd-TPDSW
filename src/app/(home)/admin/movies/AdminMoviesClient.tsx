@@ -7,11 +7,12 @@ import { Movie } from '@/lib/types.js';
 
 export const AdminMoviesClient = ({ page, limit = 10 }: { page: number; limit: number }) => {
     const { user } = useAuthContext();
-    const { data: movies, pagination, loading } = useApiPaginated<Movie[]>('/movies/search',
+    const { data: movies, pagination, loading, error } = useApiPaginated<Movie[]>('/movies/search',
         page,
         limit,
         { requireAuth: true }
     );
+
     if (!user || user.role !== "ADMIN") {
         return (
             <div className="flex items-center justify-center min-h-64">
@@ -23,6 +24,31 @@ export const AdminMoviesClient = ({ page, limit = 10 }: { page: number; limit: n
             </div>
         );
     }
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-64">
+                <div className="text-center">
+                    <div className="animate-spin text-6xl mb-4">⏳</div>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Cargando películas...</h2>
+                    <p className="text-gray-600">Por favor espera un momento</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center min-h-64">
+                <div className="text-center">
+                    <div className="text-red-500 text-6xl mb-4">❌</div>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Error al cargar películas</h2>
+                    <p className="text-gray-600">{error}</p>
+                </div>
+            </div>
+        );
+    }
+
     if (!movies || movies.length === 0) {
         return (
             <div className="flex items-center justify-center min-h-64">

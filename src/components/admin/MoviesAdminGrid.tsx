@@ -19,10 +19,17 @@ interface Props {
 
 export function MoviesAdminGrid({ movies: initialMovies }: Props) {
   const router = useRouter();
-  const [movies, setMovies] = useState<Movie[]>(initialMovies);
+  const [movies, setMovies] = useState<Movie[]>(initialMovies || []);
   const [deletingMovieId, setDeletingMovieId] = useState<number | null>(null);
   const [editingMovie, setEditingMovie] = useState<updateMovieDTO | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Actualizar el estado local cuando cambien las props
+  useEffect(() => {
+    if (initialMovies) {
+      setMovies(initialMovies);
+    }
+  }, [initialMovies]);
 
   const handleDeleteMovie = async (movieId: number) => {
   // Confirmar PRIMERO
@@ -132,7 +139,7 @@ export function MoviesAdminGrid({ movies: initialMovies }: Props) {
             {movies.map((movie) => (
               <tr key={movie.id_movie} className="hover:bg-gray-500/5">
                 <td className="px-4 py-4">
-                  <Link className="flex items-center gap-3" href={`/movie/${movie.id_movie}`}>
+                  <Link className="flex items-center gap-3" href={`/movies/${movie.id_movie}`}>
                     <div className="text-sm font-medium">{movie.title}</div>
                   </Link>
                 </td>

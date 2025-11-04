@@ -1,10 +1,10 @@
 "use client";
 
-import {  useState } from "react";
+import {  useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, Heart, Check } from "lucide-react";
-import { UserStats } from "@/lib/types";
+import { UserStats, ToWatch, Favourite } from "@/lib/types";
 import { getImageUrl } from "@/utils/getImageUrl";
 import { MovieFavouriteCard } from "../movies/Card/MovieFavouriteCard";
 import { MovieWatchListCard } from "../movies/Card/MovieWatchListCard";
@@ -16,17 +16,36 @@ interface Props {
 }
 export function ProfileTabs({userStats}: Props) {
   const [activeTab, setActiveTab] = useState("favorites");
-   // favourites | vistas | resenias
-  console.log(userStats);
+  const [localFavorites, setLocalFavorites] = useState<Favourite[]>(userStats.Favorite);
+  const [localWatchList, setLocalWatchList] = useState<ToWatch[]>(userStats.ToWatch);
+  const [renderKey, setRenderKey] = useState(0); // Para forzar re-render
+  
+  // Actualizar estados locales cuando cambien las props
+  useEffect(() => {
+    setLocalFavorites(userStats.Favorite);
+    setLocalWatchList(userStats.ToWatch);
+  }, [userStats]);
+
+  // Callbacks para manejar eliminaciones
+  const handleRemoveFavorite = (movieId: number) => {
+    setLocalFavorites(prev => prev.filter(fav => fav.id_movie !== movieId));
+    setRenderKey(prev => prev + 1);
+  };
+
+  const handleRemoveFromWatchList = (movieId: number) => {
+    setLocalWatchList(prev => prev.filter(watch => watch.id_movie !== movieId));
+    setRenderKey(prev => prev + 1);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-6 pt-2">
         <div className="text-center">
-          <p className="text-lg font-bold">{userStats._count.Favorite}</p>
+          <p className="text-lg font-bold">{localFavorites.length}</p>
           <p className="text-xs text-muted-foreground">Favoritos</p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold">{userStats._count.ToWatch}</p>
+          <p className="text-lg font-bold">{localWatchList.length}</p>
           <p className="text-xs text-muted-foreground">Watchlist</p>
         </div>
         <div className="text-center">
@@ -63,17 +82,37 @@ export function ProfileTabs({userStats}: Props) {
 
       {activeTab === "favorites" && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {userStats.Favorite.map((favourite) => (
-            <MovieFavouriteCard key={favourite.id_movie} favourite={favourite} />
-          ))}
+          {localFavorites.length > 0 ? (
+            localFavorites.map((favourite) => (
+              <MovieFavouriteCard 
+                key={favourite.id_movie} 
+                favourite={favourite} 
+                onRemove={handleRemoveFavorite}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center text-muted-foreground py-8">
+              No tienes películas favoritas
+            </div>
+          )}
         </div>
       )}
 
       {activeTab === "watched" && (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {userStats.ToWatch.map((toWatch) => (
-            <MovieWatchListCard key={toWatch.created_at} toWatch={toWatch} />
-          ))}
+        <div key={`watchlist-${renderKey}`} className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {localWatchList.length > 0 ? (
+            localWatchList.map((toWatch) => (
+              <MovieWatchListCard 
+                key={`${toWatch.id_movie}-${toWatch.created_at}-${renderKey}`} 
+                toWatch={toWatch} 
+                onRemove={handleRemoveFromWatchList}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center text-muted-foreground py-8">
+              Tu watchlist está vacía
+            </div>
+          )}
         </div>
       )}
 
