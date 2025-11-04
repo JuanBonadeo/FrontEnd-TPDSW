@@ -1,12 +1,48 @@
 /* @vitest-environment jsdom */
 import React from "react";
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
-import { act } from "react-dom/test-utils";
 import { createRoot, Root } from "react-dom/client";
+import { flushSync } from "react-dom";
+
+// Mock para evitar navegación real en jsdom
+Object.defineProperty(window, 'location', {
+  value: {
+    ...window.location,
+    assign: vi.fn(),
+    replace: vi.fn(),
+    href: 'http://localhost:3000'
+  },
+  writable: true
+});
+
+vi.mock("next/link", () => ({
+  default: ({ children, href, onClick, ...props }: { 
+    children: React.ReactNode; 
+    href: string; 
+    onClick?: (e: React.MouseEvent) => void;
+    [key: string]: unknown;
+  }) => (
+    <a 
+      href={href} 
+      onClick={(e) => {
+        e.preventDefault(); // Prevenir navegación real
+        if (onClick) onClick(e);
+      }}
+      {...props}
+    >
+      {children}
+    </a>
+  ),
+}));
 
 // Provide small mocks for Next hooks and our useApi hook
 vi.mock("next/navigation", () => ({
   useSearchParams: () => ({ toString: () => "" }),
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+  }),
 }));
 
 const mockCategories = [
@@ -37,7 +73,9 @@ describe("CategoriesModal", () => {
 
   afterEach(() => {
     if (root && container) {
-      act(() => root.unmount());
+      flushSync(() => {
+        root!.unmount();
+      });
       container.remove();
     }
     container = null;
@@ -46,65 +84,66 @@ describe("CategoriesModal", () => {
   });
 
   it("opens the modal when the button is clicked", async () => {
-    act(() => {
+    flushSync(() => {
       root!.render(<CategoriesModal />);
     });
 
-    // wait for initial effects
-    await Promise.resolve();
+    // Espera microtask para efectos
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     const button = container!.querySelector("button");
     expect(button).toBeTruthy();
     expect(button!.textContent).toMatch(/Categorias/i);
 
-    // click the button to open the modal
-    act(() => {
-      button!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    });
+    // Click para abrir el modal
+    button!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
 
-    // wait for update
-    await Promise.resolve();
+    // Espera a que se actualice el DOM
+    await new Promise(resolve => setTimeout(resolve, 10));
 
-    // Modal header should be present when open
-    const header = Array.from(container!.querySelectorAll("h2")).find((h) => /Selecciona una categoría/i.test(h.textContent || ""));
+    // Modal header debería estar presente cuando está abierto
+    const header = Array.from(container!.querySelectorAll("h2")).find(
+      (h) => /Selecciona una categoría/i.test(h.textContent || "")
+    );
     expect(header).toBeTruthy();
   });
 
   it("fills the button label when a category is chosen (simulate navigation)", async () => {
-    // render without a currentCategoryId
-    act(() => {
+    // Render sin currentCategoryId
+    flushSync(() => {
       root!.render(<CategoriesModal />);
     });
 
-    await Promise.resolve();
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     const openBtn = container!.querySelector("button");
     expect(openBtn).toBeTruthy();
 
-    // open modal
-    act(() => {
-      openBtn!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    });
+    // Abrir modal
+    openBtn!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
 
-    await Promise.resolve();
+    await new Promise(resolve => setTimeout(resolve, 10));
 
-    // click the category link 'Drama'
-    const catLink = Array.from(container!.querySelectorAll("a")).find((a) => /Drama/i.test(a.textContent || ""));
+    // Click en el link de categoría 'Drama'
+    const catLink = Array.from(container!.querySelectorAll("a")).find(
+      (a) => /Drama/i.test(a.textContent || "")
+    );
     expect(catLink).toBeTruthy();
 
-    act(() => {
-      catLink!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    });
+    // Click en la categoría (prevenir navegación real)
+    const clickEvent = new MouseEvent("click", { bubbles: true, cancelable: true });
+    catLink!.dispatchEvent(clickEvent);
 
-    // simulate parent navigation by re-rendering component with the chosen category id
-    await Promise.resolve();
-    act(() => {
+    // Simular navegación del padre re-renderizando con la categoría elegida
+    await new Promise(resolve => setTimeout(resolve, 10));
+    
+    flushSync(() => {
       root!.render(<CategoriesModal currentCategoryId={"2"} />);
     });
 
-    await Promise.resolve();
+    await new Promise(resolve => setTimeout(resolve, 10));
 
-    // Now the button should show the selected category name
+    // Ahora el botón debería mostrar el nombre de la categoría seleccionada
     const btnAfter = container!.querySelector("button");
     expect(btnAfter).toBeTruthy();
     expect(btnAfter!.textContent).toMatch(/Categorias: Drama/i);
