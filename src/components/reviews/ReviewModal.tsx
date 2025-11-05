@@ -156,6 +156,7 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
             router.push("/auth/login");
             return;
           }
+          setCreated(false);
           setOpen(true);
         }}
         className="flex items-center justify-center  group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-1 md:px-6 md:py-3 rounded-md font-medium transition-all duration-300 transform hover:scale-102 hover:shadow-lg active:scale-95"
