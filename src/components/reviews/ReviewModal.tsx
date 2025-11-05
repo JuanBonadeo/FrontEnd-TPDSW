@@ -205,23 +205,45 @@ export default function ReviewModal({ idMovie }: ReviewModalProps) {
                 </label>
 
                 <div className="flex items-center gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => handleStarClick(star)}
-                      onMouseEnter={() => setHoveredStar(star)}
-                      onMouseLeave={() => setHoveredStar(0)}
-                      className="group transition-transform hover:scale-125 focus:scale-125 active:scale-110"
-                    >
-                      <Star
-                        className={`w-8 h-8 transition-all duration-200 ${star <= (hoveredStar || score)
-                            ? "fill-yellow-400 text-yellow-400 drop-shadow-lg"
-                            : "text-gray-600 hover:text-gray-400"
-                          }`}
-                      />
-                    </button>
-                  ))}
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    // Calcular el porcentaje de relleno para cada estrella
+                    const displayScore = hoveredStar || score;
+                    let fillPercent = 0;
+                    if (displayScore >= star) {
+                      fillPercent = 100;
+                    } else if (displayScore > star - 1) {
+                      fillPercent = Math.round((displayScore - (star - 1)) * 100);
+                    }
+                    return (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => handleStarClick(star)}
+                        onMouseEnter={() => setHoveredStar(star)}
+                        onMouseLeave={() => setHoveredStar(0)}
+                        className="group transition-transform hover:scale-125 focus:scale-125 active:scale-110"
+                        style={{ position: 'relative' }}
+                      >
+                        <span style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
+                          <Star
+                            className={`w-8 h-8 transition-all duration-200 text-gray-600 hover:text-gray-400`}
+                          />
+                        </span>
+                        {fillPercent > 0 && (
+                          <span style={{ position: 'absolute', inset: 0, zIndex: 2, width: '100%', height: '100%', overflow: 'hidden', pointerEvents: 'none' }}>
+                            <span style={{ display: 'block', width: `${fillPercent}%`, height: '100%', overflow: 'hidden' }}>
+                              <Star
+                                className={`w-8 h-8 transition-all duration-200 fill-yellow-400 text-yellow-400 drop-shadow-lg`}
+                              />
+                            </span>
+                          </span>
+                        )}
+                        <span style={{ visibility: 'hidden' }}>
+                          <Star className="w-8 h-8" />
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <div className="flex items-center gap-3">
