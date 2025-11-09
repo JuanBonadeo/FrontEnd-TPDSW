@@ -133,17 +133,25 @@ export function ProfileTabs({userStats}: Props) {
                   <div>
                     <h3 className="font-medium">{review.Movie.title}</h3>
                     <div className="flex items-center mt-1 mb-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(review.Movie.rating)
-                              ? "text-primary"
-                              : "text-muted"
-                          }`}
-                          fill={i < Math.floor(review.Movie.rating) ? "red" : "none"}
-                        />
-                      ))}
+                     {[...Array(5)].map((_, i) => (
+                            <div key={i} className="relative w-4 h-4 shrink-0">
+                                {/* empty star (outline) */}
+                                <Star
+                                    className="w-4 h-4 text-muted"
+                                    fill="none"
+                                />
+                                {/* colored overlay clipped to fraction */}
+                                <div
+                                    className="absolute left-0 top-0 h-full overflow-hidden"
+                                    style={{ width: `${Math.round(Math.max(0, Math.min(1, Number(review.score) - i)) * 100)}%` }}
+                                >
+                                    <Star
+                                        className="w-4 h-4 text-primary"
+                                        fill="currentColor"
+                                    />
+                                </div>
+                            </div>
+                        ))}
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {review.comment}
