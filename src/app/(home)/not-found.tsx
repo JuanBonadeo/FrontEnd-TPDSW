@@ -46,27 +46,6 @@ export default function NotFoundPage() {
             Search Movies
           </Link>
         </div>
-        
-        {/* Sugerencias */}
-        <div className="mt-12 p-6 bg-gray-800/50 rounded-xl border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">Popular Sections</h3>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {[
-              { href: '/movies', label: 'Popular Movies' },
-              { href: '/actors', label: 'Top Actors' },
-              { href: '/reviews', label: 'Recent Reviews' },
-              { href: '/genres', label: 'Browse Genres' }
-            ].map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white rounded-md transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
